@@ -2,6 +2,7 @@
 
 Reta vortaro, tekstaro, kaj tradukilo. La vortaro enhavas aĵojn kaj oficialajn (de la Akademio, ktp) kaj kreitajn de uzantoj. 
 
+[![.NET](https://github.com/jdaless/Vortaro/actions/workflows/dotnet.yml/badge.svg)](https://github.com/jdaless/Vortaro/actions/workflows/dotnet.yml)
 ## Eki
 La UVD estas apo farita de .NET6. Post instalado de [dotnet](https://dotnet.microsoft.com/en-us/download), oni devos krei la komencan datumbazon. La projekto `Servilo` ankaŭ estas ilo por krei tian datumbazon el dosiero `.csv`. Ekzemple, 
 ``` bash
