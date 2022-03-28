@@ -20,4 +20,4 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ./src/Server/
     - name: Build
-      run: dotnet build --no-restore --project ./src/Server/
+      run: dotnet build --no-restore ./src/Server/
