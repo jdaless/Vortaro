@@ -1,0 +1,112 @@
+﻿@page "/serĉi/{serĉtipo}/{serĉfrazo?}"
+
+<PageTitle>Universala Vortaro Demokratia</PageTitle>
+
+<div>
+    <input placeholder="Tajpu serĉfrazon" value="@Uri.UnescapeDataString(Serĉfrazo)" @oninput="@TraktiFrazoŜanĝo"/>
+    <input type="checkbox" id="ĉiuj" @bind="@montriĈiujn"/><label for="ĉiuj">montri ĉiujn, eĉ tiujn sen enhavoj</label>
+    <span>
+        <div>
+            Serĉu 
+            <select value="@serĉtipo" @oninput="@TraktiTipoŜanĝo">
+                <option value="vorto">vortojn</option>
+                <option value="difino">difinojn</option>
+                <option value="ekzemplo">ekzemplojn</option>
+                <option value="traduko">tradukojn</option>
+            </select>
+        </div>
+        <div>
+            Trovu
+            <input type="checkbox" @bind="@ĈuMontriBazvortojn" id="vortoj"/><label for="vortoj">bazvortojn</label>
+            <input type="checkbox" @bind="@ĈuMontriFinaĵojn" id="finaĵoj"/><label for="finaĵoj">finaĵojn</label>
+            <input type="checkbox" @bind="@ĈuMontriKunmetaĵojn" id="kunmetaĵoj"/><label for="kunmetaĵoj">kunmetaĵojn</label>
+        </div>
+        <div>
+            Montru la plej alta(j)n
+            <input type="checkbox" id="difinoj" @bind="@ĈuMontriDifinojn"/><label for="difinoj">difinon</label>
+            <input type="checkbox" id="ekzemploj" @bind="@ĈuMontriEkzemplojn"/><label for="ekzemploj">ekzemplon</label>
+            <input type="checkbox" id="tradukoj" @bind="@ĈuMontriTradukojn"/><label for="tradukoj">tradukon</label>
+            @if(ĈuMontriTradukojn!.Value)
+            {
+                <select @bind="@Lingvo" @oninput="@TraktiElektaŜanĝo">
+                    @foreach(var l in lingvoj?.Where(l=>l.Id != "eo") ?? new List<Lingvo>())
+                    {
+                        <option value="@l.Id">@l.Nomo</option>
+                    }
+                </select>
+            }
+        </div>
+        <div>
+            el fontoj
+            <input type="checkbox" id="oficialaj" @bind="@UzuOficialajnFontojn"/><label for="oficialaj">oficialaj</label>
+            <input type="checkbox" id="uzantaj" @bind="@UzuUzantajnFontojn"/><label for="uzantaj">uzantaj</label>            
+        </div>
+    </span>
+</div>
+@if(ŝarĝitaj != tuto)
+{
+    <div>
+        <progress id="progress" value="@ŝarĝitaj" max="@tuto"/>
+        <label for="progress">Ŝarĝinte @(ŝarĝitaj)</label>
+    </div>
+}
+else
+{
+    <div>
+        @ŝarĝitaj @(ŝarĝitaj > 1 ? "rezultoj" : "rezulto")
+    </div>
+}
+<div>    
+    @if(ŜarĝitajVortoj is not null)
+    {
+        foreach(var vorto in ŜarĝitajVortoj)
+        {
+            <p>
+                <h3>
+                    @if(vorto.Teksto is not null || vorto.Radikoj.Any(r=>r.RadikaVorto is not null))
+                    {
+                        @vorto.ToString()
+                    }
+                    <NavLink href=@($"/vorto/{vorto.Id}")>🡺</NavLink>
+                </h3>
+                @if(ĈuMontriDifinojn!.Value) 
+                {
+                    if(!vorto.Difinoj.Any())
+                    {
+                        <p><i style="color:grey">Vorto ne havas difinon. <AuthorizeView>Bonvolu aldoni!</AuthorizeView></i></p>
+                    }
+                    else
+                    {
+                        <p>@((MarkupString)Markdig.Markdown.ToHtml(vorto.Difinoj[0].Teksto))</p>
+                    }
+                }
+                @if(ĈuMontriEkzemplojn!.Value) 
+                {
+                    if(!vorto.Ekzemploj.Any())
+                    {
+                        <p><i style="color:grey">Vorto ne havas ekzemplon. <AuthorizeView>Bonvolu aldoni!</AuthorizeView></i></p>
+                    }
+                    else
+                    {
+                        <p>@((MarkupString)Markdig.Markdown.ToHtml(vorto.Ekzemploj[0].Teksto))</p>
+                    }
+                }
+                @if(ĈuMontriTradukojn!.Value) 
+                {
+                    if(!vorto.Tradukoj.Any())
+                    {
+                        <p><i style="color:grey">Vorto ne havas tradukon en tiu ĉi lingvo. <AuthorizeView>Bonvolu aldoni!</AuthorizeView></i></p>
+                    }
+                    else
+                    {
+                        <p lang="@Lingvo">@((MarkupString)Markdig.Markdown.ToHtml(vorto.Tradukoj[0].Teksto))</p>
+                    }
+                }
+            </p>
+        }
+    }
+    else
+    {
+        <p>Ŝarĝigas...</p>
+    }
+</div>

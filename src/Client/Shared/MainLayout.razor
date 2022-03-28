@@ -1,0 +1,25 @@
+﻿@inherits LayoutComponentBase
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+<div class="page">
+
+    <main>
+        <div class="top-row px-4">
+            <AuthorizeView>
+                <Authorized>
+                    <NavLink href="/uzanto">@context.User.Identity!.Name</NavLink>
+                    <NavLink href="/krei">Aldoni</NavLink>
+                </Authorized>
+            </AuthorizeView>
+            <NavLink href="/serĉi/vorto">Serĉi</NavLink>
+            <NavLink href="/info">Pri</NavLink>
+            <AccessControl/>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>

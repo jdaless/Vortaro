@@ -1,0 +1,49 @@
+@page "/krei"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<h2>Aldoni novan vorton</h2>
+
+<p>
+    Kreu
+    <select @bind="@Vortspeco">
+        <option>bazvorton</option>
+        <option>kunmetaĵon</option>
+    </select>
+</p>
+
+@if(Vortspeco == "bazvorton")
+{
+    <input @bind="@teksto"/>
+}
+else if(Vortspeco == "kunmetaĵon")
+{
+    @foreach(var v in bazvortoj)
+    {
+        <i>@v.Teksto/</i><button @onclick="_=>bazvortoj.Remove(v)">x</button>
+    }
+}
+<select @bind="@finaĵo">
+    @if(finaĵoj is not null)
+    {    
+        @foreach (var f in finaĵoj)
+        {
+            <option value="@f?.Id">@(f?.Teksto! ?? "Neniu")</option>
+        }
+    }
+</select>
+<button @onclick="AldonuVorton">Krei</button>
+
+@if(Vortspeco == "kunmetaĵon")
+{
+    <h3>Aldoni Bazvortojn</h3>
+    <div>
+        <input @oninput="@(a=>Serĉi(a.Value!.ToString()!))" />
+        <ul>
+            @foreach (var vorto in bazvortElektoj?.OrderBy(v=>v.Teksto).ToList() ?? new())
+            {
+                <li><button @onclick="_=>bazvortoj.Add(vorto)">+</button> @vorto.Teksto<NavLink href=@($"/vorto/{vorto.Id}")>🡺</NavLink></li>
+            }
+        </ul>
+    </div>
+}

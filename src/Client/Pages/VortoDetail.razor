@@ -1,0 +1,171 @@
+@page "/vorto/{id:guid}"
+
+@if(vorto is null)
+{
+    <p>Ŝarĝigas...</p>
+}
+else
+{
+    <PageTitle>@vorto.ToString()</PageTitle>
+    <h1>@vorto.ToString()</h1>
+    <h3>Informaĵo</h3>
+    @if(vorto.Teksto is not null)
+    {
+        <p>Ĉi tiu vorto estas bazvorto.</p>
+    }
+    else
+    {
+        <h4>Radikoj</h4>
+        <ol>
+            @foreach (var item in vorto.Radikoj.OrderBy(r=>r.Ordo))
+            {
+                <li>@RadikaString(item.RadikaVorto.Teksto!)<NavLink href=@($"/vorto/{item.RadikaVorto.Id}")>🡺</NavLink></li>
+            }
+        </ol>
+    }
+    <h3>Difinoj</h3>
+    <div>
+        @if(!vorto.Difinoj.Any())
+        {
+            <p><i style="color:grey">Vorto ne havas difinon. <AuthorizeView>Bonvolu aldoni!</AuthorizeView></i></p>
+        }
+        else
+        {
+            @foreach (var item in vorto.Difinoj)
+            {
+                <blockquote cite="@item.Fonto.Ligilo">@((MarkupString)Markdig.Markdown.ToHtml(item.Teksto))</blockquote>  
+                @if(item.Fonto.ĈuUzantkreita)
+                {
+                    <p>
+                        <span>
+                            <AuthorizeView>
+                                <href @onclick="@(_ => Suprigu(item))" style="cursor: pointer;">🠝</href>
+                                <href @onclick="@(_ => Malsuprigu(item))" style="cursor: pointer;">🠟</href>
+                            </AuthorizeView>
+                            @item.Fonto.Favoreco 
+                            <NavLink href=@($"/uzanto/{item.Fonto.Kreinto!.Id}")>
+                                <i>@item.Fonto.Kreinto.Nomo</i>
+                            </NavLink>
+                        </span>
+                    </p> 
+                }
+                else
+                {
+                    <p>-<NavLink href="@item.Fonto.Ligilo"><i>@item.Fonto.Titolo</i></NavLink></p>    
+                }      
+            }
+        }
+        <AuthorizeView>
+            @if(ĉuAldoniDifino)
+            {
+                <textarea rows="1" value="@difino" @oninput="@(a=>difino=a.Value!.ToString()!)"/>
+                <button @onclick="@(_=>SendiEnhavo<Difino>(difino))">+</button>
+                @((MarkupString)Markdig.Markdown.ToHtml(difino))
+            }
+            else
+            {
+                <button @onclick="@(()=>ĉuAldoniDifino = true)">Aldoni</button>                    
+            }
+        </AuthorizeView>
+    </div>
+    <h3>Ekzemploj</h3>
+    <div>
+        @if(!vorto.Ekzemploj.Any())
+        {
+            <p><i style="color:grey">Vorto ne havas ekzemplon. <AuthorizeView>Bonvolu aldoni!</AuthorizeView></i></p>
+        }
+        else
+        {
+            @foreach (var item in vorto.Ekzemploj)
+            {
+                <blockquote cite="@item.Fonto.Ligilo">@((MarkupString)Markdig.Markdown.ToHtml(item.Teksto))</blockquote>  
+                @if(item.Fonto.ĈuUzantkreita)
+                {
+                    <p>
+                        <span>
+                            <AuthorizeView>
+                                <href @onclick="@(_ => Suprigu(item))" style="cursor: pointer;">🠝</href>
+                                <href @onclick="@(_ => Malsuprigu(item))" style="cursor: pointer;">🠟</href>
+                            </AuthorizeView>
+                            @item.Fonto.Favoreco 
+                            <NavLink href=@($"/uzanto/{item.Fonto.Kreinto!.Id}")>
+                                <i>@item.Fonto.Kreinto.Nomo</i>
+                            </NavLink>
+                        </span>
+                    </p> 
+                }
+                else
+                {
+                    <p>-<NavLink href="@item.Fonto.Ligilo"><i>@item.Fonto.Titolo</i></NavLink></p>    
+                }      
+            }
+        }
+        <AuthorizeView>
+            @if(ĉuAldoniEkzemplo)
+            {
+                <textarea rows="1" value="@ekzemplo" @oninput="@(a=>ekzemplo=a.Value!.ToString()!)"/>
+                <button @onclick="@(_=>SendiEnhavo<Ekzemplo>(ekzemplo))">+</button>
+                @((MarkupString)Markdig.Markdown.ToHtml(ekzemplo))
+            }
+            else
+            {
+                <button @onclick="@(()=>ĉuAldoniEkzemplo = true)">Aldoni</button>                    
+            }
+        </AuthorizeView>
+    </div>
+    <h3>Tradukoj</h3>
+    if(lingvoj is null)
+    {
+        <p>Ŝarĝigas...</p>
+    }
+    else
+    {
+        @foreach (var lingvo in lingvoj.Where(l => l.Id != "eo").OrderBy(l=>l.Id))
+        {
+            var tradukoj = vorto.Tradukoj.Where(t => t.LingvoId == lingvo.Id).ToList();
+            <h4>@lingvo.Nomo</h4>
+            @if(tradukoj.Any())
+            {
+                @foreach (var item in tradukoj)
+                {
+                    <blockquote cite="@item.Fonto.Ligilo">@((MarkupString)Markdig.Markdown.ToHtml(item.Teksto))</blockquote>  
+                    @if(item.Fonto.ĈuUzantkreita)
+                    {
+                        <p>
+                            <span>
+                                <AuthorizeView>
+                                    <href @onclick="@(_ => Suprigu(item))" style="cursor: pointer;">🠝</href>
+                                    <href @onclick="@(_ => Malsuprigu(item))" style="cursor: pointer;">🠟</href>
+                                </AuthorizeView>
+                                @item.Fonto.Favoreco 
+                                <NavLink href=@($"/uzanto/{item.Fonto.Kreinto!.Id}")>
+                                    <i>@item.Fonto.Kreinto.Nomo</i>
+                                </NavLink>
+                            </span>
+                        </p> 
+                    }
+                    else
+                    {
+                        <p>-<NavLink href="@item.Fonto.Ligilo"><i>@item.Fonto.Titolo</i></NavLink></p>    
+                    }                    
+                } 
+            }
+            else
+            {
+                <p><i style="color:grey">Vorto ne havas tradukon en tiu ĉi lingvo. <AuthorizeView>Bonvolu aldoni!</AuthorizeView></i></p>
+            }
+            <AuthorizeView>
+                @if(ĉuAldoniTraduko == lingvo.Id)
+                {
+                    <textarea rows="1" value="@traduko" @oninput="@(a=>traduko=a.Value!.ToString()!)"/>
+                    <button @onclick="@(_=>SendiEnhavo<Traduko>(traduko, lingvo.Id))">+</button>
+                    @((MarkupString)Markdig.Markdown.ToHtml(traduko))
+                }
+                else
+                {
+                    <button @onclick="@(()=>ĉuAldoniTraduko = lingvo.Id)">Aldoni</button>                    
+                }
+            </AuthorizeView>
+        }
+    }
+}

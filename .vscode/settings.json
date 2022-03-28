@@ -1,0 +1,10 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "C:\\Users\\dales\\AppData\\Local\\vortaro.db",
+            "name": "vortaro"
+        }
+    ]
+}
