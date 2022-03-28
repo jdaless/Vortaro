@@ -14,7 +14,7 @@ Poste, oni simple povas uzi `dotnet run --project .\src\Server\` por komencigi l
 La apo ankaŭ uzas Auth0 por aŭtentigo, do vi bezonos ŝlosilojn de tio por ke la apo funkcias. 
 
 ## Kiel ĝi funkcias
-
+Serĉu vorton per la serĉilo. Ĝi rigardas la x-sistemo kiel la ĉapelitajn literojn (ekz: ux => ŭ). Se vi volas, vi ankaŭ povas uzi RegEsp'on, similan al tiu kiun [la tekstaro](https://tekstaro.com/specialaj_serchosimboloj.html) uzas. Ekzemple, se vi volas serĉi ĉiujn vortojn kiuj komencas per "r", serĉu "^r".
 
 ## Gastigado
 Mi ankoraŭ provas sciiĝi la plej bona rimedo por gastigi la servilon. La apo senutilas se vi ne estas sur la TTT. Mi jam aĉetis la adreson `uvdemokratia.com`. 
