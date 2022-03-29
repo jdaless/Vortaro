@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using CsvHelper;
 using System.Globalization;
 using System.Text.Json;
+using Microsoft.Net.Http.Headers;
 
 var Configuration = new ConfigurationBuilder()
         .AddJsonFile("appsettings.json", optional: false)
@@ -96,5 +97,11 @@ if(Environment.GetCommandLineArgs().FirstOrDefault(a => a.EndsWith(".csv")) is s
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+
+app.UseCors(policy => 
+    policy.WithOrigins("http://localhost:5000", "https://localhost:5001")
+    .AllowAnyMethod()
+    .WithHeaders(HeaderNames.ContentType, HeaderNames.Authorization, "x-custom-header")
+    .AllowCredentials());
 
 app.Run();
