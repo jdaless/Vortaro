@@ -28,7 +28,7 @@ public class VortaroContext : DbContext
     {
         //options.UseSqlite($"Data Source={DbPath}");        
         options.UseMySql(
-            Environment.GetEnvironmentVariable("UVDConnectionString",EnvironmentVariableTarget.User), 
+            Environment.GetEnvironmentVariable("ConnectionStrings:UVD",EnvironmentVariableTarget.User), 
             new MySqlServerVersion(new Version(5, 7, 36)),
             options =>
             {
