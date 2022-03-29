@@ -5,9 +5,11 @@ using CsvHelper;
 using System.Globalization;
 using System.Text.Json;
 using Microsoft.Net.Http.Headers;
+using Microsoft.EntityFrameworkCore;
 
 var Configuration = new ConfigurationBuilder()
         .AddJsonFile("appsettings.json", optional: false)
+        .AddEnvironmentVariables()
         .Build();
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +20,9 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 
-builder.Services.AddDbContext<VortaroContext>();
+builder.Services.AddDbContext<VortaroContext>(options => options.UseMySql(
+            Configuration.GetConnectionString("UVD"), 
+            new MySqlServerVersion(new Version(5, 7, 36))));
 
 async Task Validate(TokenValidatedContext context)
 {

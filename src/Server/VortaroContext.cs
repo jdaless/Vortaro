@@ -15,26 +15,7 @@ public class VortaroContext : DbContext
     public DbSet<Uzanto> Uzantoj { get; set; } = null!;
     public DbSet<Voĉdono> Voĉdonoj { get; set; } = null!;
 
-    public string DbPath {get;}
-
-    public VortaroContext()
-    {
-        var folder = Environment.SpecialFolder.LocalApplicationData;
-        var path = Environment.GetFolderPath(folder);
-        DbPath = System.IO.Path.Join(path, "vortaro.db");
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder options)
-    {
-        //options.UseSqlite($"Data Source={DbPath}");        
-        options.UseMySql(
-            Environment.GetEnvironmentVariable("ConnectionStrings:UVD",EnvironmentVariableTarget.User), 
-            new MySqlServerVersion(new Version(5, 7, 36)),
-            options =>
-            {
-                
-            });
-    }
+    public VortaroContext(DbContextOptions<VortaroContext> options) : base(options) {}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
