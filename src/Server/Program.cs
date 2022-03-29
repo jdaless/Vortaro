@@ -101,7 +101,6 @@ app.MapFallbackToFile("index.html");
 app.UseCors(policy => 
     policy.WithOrigins("http://localhost:5000", "https://localhost:5001")
     .AllowAnyMethod()
-    .WithHeaders(HeaderNames.ContentType, HeaderNames.Authorization, "x-custom-header")
-    .AllowCredentials());
+    .AllowAnyOrigin());
 
 app.Run();
