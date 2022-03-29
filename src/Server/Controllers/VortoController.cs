@@ -28,53 +28,51 @@ public class VortoController : ControllerBase
 
         // se la uzanto ne uzas RegEsp, ni povas simple kontroli
         // .Contains en la db   
-        var param = new SqliteParameter("p0",s);
         if(System.Text.RegularExpressions.Regex.Escape(s) == s)
         {
-            var petastring = 
+        
+            FormattableString petastring = 
                 @$"SELECT A.*
-                FROM Vortoj AS A 
-                LEFT JOIN Vortoj AS F ON A.FinaĵoId = F.Id 
-                LEFT JOIN 
-                    (
-                    SELECT L2.DerivaĵaVortoId, group_concat(REPLACE(L2.Teksto,""-"",""""),"""") as Teksto 
-                    FROM 
-                        (
-                        SELECT L1.DerivaĵaVortoId, R.Teksto FROM Radiko AS L1 
-                        LEFT JOIN Vortoj AS R ON R.Id = L1.RadikaVortoId 
-                        ORDER BY L1.Ordo
+                    FROM vortoj AS A 
+                    LEFT JOIN vortoj AS F 
+                    ON A.FinaĵoId = F.Id 
+                    LEFT JOIN (
+                        SELECT L2.DerivaĵaVortoId, group_concat(REPLACE(L2.Teksto,""-"",""""),"""") as Teksto 
+                        FROM (
+                            SELECT L1.DerivaĵaVortoId, R.Teksto 
+                            FROM radiko AS L1 
+                            LEFT JOIN vortoj AS R ON R.Id = L1.RadikaVortoId 
+                            ORDER BY L1.Ordo
                         ) AS L2
-                    GROUP BY L2.DerivaĵaVortoId 
-                    ) 
-                    AS L ON A.Id = L.DerivaĵaVortoId
-
-                WHERE instr(REPLACE(IFNULL(A.Teksto,L.Teksto)||IFNULL(F.Teksto,""""),""-"",""""), ""{param.Value}"") > 0";
+                        GROUP BY L2.DerivaĵaVortoId 
+                    ) AS L 
+                    ON A.Id = L.DerivaĵaVortoId
+                    WHERE instr(REPLACE(CONCAT(IFNULL(A.Teksto,L.Teksto),IFNULL(F.Teksto,"""")),""-"",""""), {s}) > 0";
             var q = _context.Vortoj
-                .FromSqlRaw(petastring, param);                      
+                .FromSqlInterpolated(petastring);                      
             return q.ToArray();
         }
         else
         {
-            var petastring = 
+            FormattableString petastring = 
                 @$"SELECT A.*
-                FROM Vortoj AS A 
-                LEFT JOIN Vortoj AS F ON A.FinaĵoId = F.Id 
-                LEFT JOIN 
-                    (
-                    SELECT L2.DerivaĵaVortoId, group_concat(REPLACE(L2.Teksto,""-"",""""),"""") as Teksto 
-                    FROM 
-                        (
-                        SELECT L1.DerivaĵaVortoId, R.Teksto FROM Radiko AS L1 
-                        LEFT JOIN Vortoj AS R ON R.Id = L1.RadikaVortoId 
-                        ORDER BY L1.Ordo
+                    FROM vortoj AS A 
+                    LEFT JOIN vortoj AS F 
+                    ON A.FinaĵoId = F.Id 
+                    LEFT JOIN (
+                        SELECT L2.DerivaĵaVortoId, group_concat(REPLACE(L2.Teksto,""-"",""""),"""") as Teksto 
+                        FROM (
+                            SELECT L1.DerivaĵaVortoId, R.Teksto 
+                            FROM radiko AS L1 
+                            LEFT JOIN vortoj AS R ON R.Id = L1.RadikaVortoId 
+                            ORDER BY L1.Ordo
                         ) AS L2
-                    GROUP BY L2.DerivaĵaVortoId 
-                    ) 
-                    AS L ON A.Id = L.DerivaĵaVortoId
-
-                WHERE regexp(""{param.Value}"",REPLACE(IFNULL(A.Teksto,L.Teksto)||IFNULL(F.Teksto,""""),""-"","""")) > 0";
+                        GROUP BY L2.DerivaĵaVortoId 
+                    ) AS L 
+                    ON A.Id = L.DerivaĵaVortoId
+                    WHERE REPLACE(CONCAT(IFNULL(A.Teksto,L.Teksto),IFNULL(F.Teksto,"""")),""-"","""") REGEXP {s}";
             var q = _context.Vortoj
-                .FromSqlRaw(petastring, param);                      
+                .FromSqlInterpolated(petastring);                      
             return q.ToArray();
         }
     }

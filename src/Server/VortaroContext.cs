@@ -26,11 +26,20 @@ public class VortaroContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-        options.UseSqlite($"Data Source={DbPath}");        
+        //options.UseSqlite($"Data Source={DbPath}");        
+        options.UseMySql(
+            Environment.GetEnvironmentVariable("UVDConnectionString",EnvironmentVariableTarget.User), 
+            new MySqlServerVersion(new Version(5, 7, 36)),
+            options =>
+            {
+                
+            });
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.UseCollation("utf8mb4_esperanto_ci");
+
         modelBuilder.Entity<Radiko>()
             .HasOne(v => v.RadikaVorto)
             .WithMany(v => v.Derivaĵoj);

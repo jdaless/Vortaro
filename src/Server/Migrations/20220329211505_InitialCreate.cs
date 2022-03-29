@@ -13,34 +13,36 @@ namespace vortaro.Server.Migrations
                 name: "Lingvoj",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    Nomo = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8mb4_esperanto_ci"),
+                    Nomo = table.Column<string>(type: "longtext", nullable: false, collation: "utf8mb4_esperanto_ci")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Lingvoj", x => x.Id);
-                });
+                })
+                .Annotation("Relational:Collation", "utf8mb4_esperanto_ci");
 
             migrationBuilder.CreateTable(
                 name: "Uzantoj",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    Nomo = table.Column<string>(type: "TEXT", nullable: false),
-                    Bildo = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8mb4_esperanto_ci"),
+                    Nomo = table.Column<string>(type: "longtext", nullable: false, collation: "utf8mb4_esperanto_ci"),
+                    Bildo = table.Column<string>(type: "longtext", nullable: false, collation: "utf8mb4_esperanto_ci")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Uzantoj", x => x.Id);
-                });
+                })
+                .Annotation("Relational:Collation", "utf8mb4_esperanto_ci");
 
             migrationBuilder.CreateTable(
                 name: "Vortoj",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Teksto = table.Column<string>(type: "TEXT", nullable: true),
-                    FinaĵoId = table.Column<Guid>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Teksto = table.Column<string>(type: "longtext", nullable: true, collation: "utf8mb4_esperanto_ci"),
+                    FinaĵoId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -50,18 +52,19 @@ namespace vortaro.Server.Migrations
                         column: x => x.FinaĵoId,
                         principalTable: "Vortoj",
                         principalColumn: "Id");
-                });
+                })
+                .Annotation("Relational:Collation", "utf8mb4_esperanto_ci");
 
             migrationBuilder.CreateTable(
                 name: "Fontoj",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ĈuUzantkreita = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Favoreco = table.Column<int>(type: "INTEGER", nullable: false),
-                    Ligilo = table.Column<string>(type: "TEXT", nullable: true),
-                    Titolo = table.Column<string>(type: "TEXT", nullable: true),
-                    KreintoId = table.Column<string>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ĈuUzantkreita = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Favoreco = table.Column<int>(type: "int", nullable: false),
+                    Ligilo = table.Column<string>(type: "longtext", nullable: true, collation: "utf8mb4_esperanto_ci"),
+                    Titolo = table.Column<string>(type: "longtext", nullable: true, collation: "utf8mb4_esperanto_ci"),
+                    KreintoId = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8mb4_esperanto_ci")
                 },
                 constraints: table =>
                 {
@@ -71,16 +74,17 @@ namespace vortaro.Server.Migrations
                         column: x => x.KreintoId,
                         principalTable: "Uzantoj",
                         principalColumn: "Id");
-                });
+                })
+                .Annotation("Relational:Collation", "utf8mb4_esperanto_ci");
 
             migrationBuilder.CreateTable(
                 name: "Radiko",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    RadikaVortoId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    DerivaĵaVortoId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Ordo = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    RadikaVortoId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    DerivaĵaVortoId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Ordo = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -97,18 +101,19 @@ namespace vortaro.Server.Migrations
                         principalTable: "Vortoj",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("Relational:Collation", "utf8mb4_esperanto_ci");
 
             migrationBuilder.CreateTable(
                 name: "Enhavoj",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    FontoId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    VortoId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Teksto = table.Column<string>(type: "TEXT", nullable: false),
-                    Discriminator = table.Column<string>(type: "TEXT", nullable: false),
-                    LingvoId = table.Column<string>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    FontoId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    VortoId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Teksto = table.Column<string>(type: "longtext", nullable: false, collation: "utf8mb4_esperanto_ci"),
+                    Discriminator = table.Column<string>(type: "longtext", nullable: false, collation: "utf8mb4_esperanto_ci"),
+                    LingvoId = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8mb4_esperanto_ci")
                 },
                 constraints: table =>
                 {
@@ -131,17 +136,18 @@ namespace vortaro.Server.Migrations
                         principalTable: "Vortoj",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("Relational:Collation", "utf8mb4_esperanto_ci");
 
             migrationBuilder.CreateTable(
                 name: "Voĉdonoj",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UzantoId = table.Column<string>(type: "TEXT", nullable: false),
-                    EnhavoId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ĈuSupraPoento = table.Column<bool>(type: "INTEGER", nullable: false),
-                    FontoId = table.Column<Guid>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    UzantoId = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8mb4_esperanto_ci"),
+                    EnhavoId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ĈuSupraPoento = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    FontoId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -163,7 +169,8 @@ namespace vortaro.Server.Migrations
                         principalTable: "Uzantoj",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("Relational:Collation", "utf8mb4_esperanto_ci");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Enhavoj_FontoId",
