@@ -52,6 +52,13 @@ public class APIServo
             yield return await APIPeto<Ekzemplo>($"ekzemplo/{id}");
     }
 
+    public async Task<(Difino? d, Ekzemplo? e, Traduko? t)> UnuajEnhavoj(Vorto v, string lingvo = "en", bool off = true, bool uzf = true)
+    {
+        var i = await APIPeto<JsonElement>($"vorto/{v.Id}/unuajenhavoj?lingvo={lingvo}&off={off}&uzf={uzf}");
+        var a = i.EnumerateArray().ToList();
+        return (a[0].Deserialize<Difino>(options), a[1].Deserialize<Ekzemplo>(options), a[2].Deserialize<Traduko>(options));
+    }
+
     public async Task<Fonto> ŜarĝiguFonton(Fonto f)
     {
         if(f.KreintoId is not null)

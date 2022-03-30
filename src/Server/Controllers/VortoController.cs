@@ -88,6 +88,36 @@ public class VortoController : ControllerBase
         }
         return vorto;
     }
+
+    [HttpGet("{id:Guid}/unuajenhavoj")]
+    public async Task<IEnumerable<Enhavo?>> GetUnuajEnhavoj(Guid id, string lingvo="en", bool off = true, bool uzf = true)
+    {
+        var vorto = await _context.Set<Vorto>()
+            .Include(v => v.Ekzemploj
+                .Where(e => (e.Fonto.ĈuUzantkreita && uzf) || (!e.Fonto.ĈuUzantkreita && off))
+                .OrderByDescending(t => t.Fonto.Favoreco))
+            .Include(v=>v.Tradukoj
+                .Where(e => e.LingvoId == lingvo && ((e.Fonto.ĈuUzantkreita && uzf) || (!e.Fonto.ĈuUzantkreita && off)))
+                .OrderByDescending(t => t.Fonto.Favoreco))
+            .Include(v=>v.Difinoj
+                .Where(e => (e.Fonto.ĈuUzantkreita && uzf) || (!e.Fonto.ĈuUzantkreita && off))
+                .OrderByDescending(t => t.Fonto.Favoreco))
+            .FirstOrDefaultAsync(v => v.Id == id);
+            
+        if(vorto is null) 
+        {
+            NotFound();
+            return null!;
+        }
+        var r = new List<Enhavo?>();
+
+        r.Add(vorto.Difinoj.FirstOrDefault());
+        r.Add(vorto.Ekzemploj.FirstOrDefault());
+        r.Add(vorto.Tradukoj.FirstOrDefault());
+        
+        return r;
+    }
+
     
     [HttpGet("{id:Guid}/radikoj")]
     public async Task<IEnumerable<Guid>> GetRadikoj(Guid id)

@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Components;
+using System.Diagnostics;
 using System.Text.Json;
 
 namespace vortaro.Client.Pages;
@@ -199,6 +200,7 @@ public sealed partial class Serĉi
     private int tuto = 0;
 
     private int ŝarĝitaj => ŜarĝitajVortoj?.Count ?? 0;
+    private TimeSpan ŝarĝtempo;
 
     private bool montriĈiujn = false;
 
@@ -249,6 +251,8 @@ public sealed partial class Serĉi
 
     public async Task ŜarĝiguVortojn()
     {
+        var s = new Stopwatch();
+        s.Start();
         var cacheSerĉfrazo = Serĉfrazo.ToString();
         
         var nePleneŜarĝigitaj = new List<Vorto>();
@@ -293,42 +297,10 @@ public sealed partial class Serĉi
                         }
                         v.Radikoj = radj.ToList();
                     }));
-            if(ĈuMontriTradukojn!.Value)
-                taskoj.Add(
-                    Task.Run(async()=>
-                    {
-                        await foreach(var t in APIServo.ŜarĝiguTradukojn(v))
-                            if(t.LingvoId == Lingvo
-                                && ((fontoj![t.FontoId].ĈuUzantkreita && UzuUzantajnFontojn!.Value)
-                                || (!fontoj![t.FontoId].ĈuUzantkreita && UzuOficialajnFontojn!.Value)))
-                                    v.Tradukoj.Add(t);
-                    }));
-            if(ĈuMontriDifinojn!.Value)
-                taskoj.Add(
-                    Task.Run(async()=>
-                    {
-                        await foreach(var d in APIServo.ŜarĝiguDifinojn(v))
-                        {
-                            if((fontoj![d.FontoId].ĈuUzantkreita && UzuUzantajnFontojn!.Value)
-                                || (!fontoj![d.FontoId].ĈuUzantkreita && UzuOficialajnFontojn!.Value))
-                                {
-                                    v.Difinoj.Add(d);
-                                }
-                        }
-                    }));
-            if(ĈuMontriEkzemplojn!.Value)
-                taskoj.Add(
-                    Task.Run(async()=>
-                    {
-                        await foreach(var e in APIServo.ŜarĝiguEkzemplojn(v))
-                        {
-                            if((fontoj![e.FontoId].ĈuUzantkreita && UzuUzantajnFontojn!.Value)
-                                || (!fontoj![e.FontoId].ĈuUzantkreita && UzuOficialajnFontojn!.Value))
-                                {
-                                    v.Ekzemploj.Add(e);
-                                }
-                        }
-                    }));
+            var t = await APIServo.UnuajEnhavoj(v, Lingvo!, UzuOficialajnFontojn!.Value, UzuUzantajnFontojn!.Value);
+            if(t.t is not null && ĈuMontriTradukojn!.Value) v.Tradukoj.Add(t.t);
+            if(t.d is not null && ĈuMontriDifinojn!.Value) v.Difinoj.Add(t.d);
+            if(t.e is not null && ĈuMontriEkzemplojn!.Value) v.Ekzemploj.Add(t.e);
             await Task.WhenAll(taskoj);
 
             // vorto maplenas laŭ la nunaj agordoj
@@ -339,6 +311,7 @@ public sealed partial class Serĉi
             }
             if(cacheSerĉfrazo != Serĉfrazo) break; 
             if(!ŜarĝitajVortoj.Any(vort => vort.Id == v.Id)) ŜarĝitajVortoj.Add(v);
+            ŝarĝtempo = s.Elapsed;
             await InvokeAsync(StateHasChanged);
         }
     }
