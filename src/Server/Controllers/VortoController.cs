@@ -37,7 +37,7 @@ public class VortoController : ControllerBase
                     LEFT JOIN vortoj AS F 
                     ON A.FinaĵoId = F.Id 
                     LEFT JOIN (
-                        SELECT L2.DerivaĵaVortoId, group_concat(REPLACE(L2.Teksto,""-"",""""),"""") as Teksto 
+                        SELECT L2.DerivaĵaVortoId, group_concat(REPLACE(L2.Teksto,""-"","""") SEPARATOR """") as Teksto 
                         FROM (
                             SELECT L1.DerivaĵaVortoId, R.Teksto 
                             FROM radiko AS L1 
@@ -60,7 +60,7 @@ public class VortoController : ControllerBase
                     LEFT JOIN vortoj AS F 
                     ON A.FinaĵoId = F.Id 
                     LEFT JOIN (
-                        SELECT L2.DerivaĵaVortoId, group_concat(REPLACE(L2.Teksto,""-"",""""),"""") as Teksto 
+                        SELECT L2.DerivaĵaVortoId, group_concat(REPLACE(L2.Teksto,""-"","""") SEPARATOR """") as Teksto 
                         FROM (
                             SELECT L1.DerivaĵaVortoId, R.Teksto 
                             FROM radiko AS L1 
