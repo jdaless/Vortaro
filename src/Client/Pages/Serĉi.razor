@@ -3,23 +3,24 @@
 <PageTitle>Universala Vortaro Demokratia</PageTitle>
 
 <div>
-    <input placeholder="Tajpu serĉfrazon" value="@Uri.UnescapeDataString(Serĉfrazo)" @oninput="@TraktiFrazoŜanĝo"/>
-    <input type="checkbox" id="ĉiuj" @bind="@montriĈiujn"/><label for="ĉiuj">montri ĉiujn, eĉ tiujn sen enhavoj</label>
+    <RadzenTextBox Placeholder="Tajpu serĉfrazon" Value="@Uri.UnescapeDataString(Serĉfrazo)" @oninput="@TraktiFrazoŜanĝo"/>
+    <RadzenCheckBox  Name="ĉiuj" @bind-Value="@montriĈiujn" TValue=bool Change=ŜarĝiguVortojn/><RadzenLabel Component="ĉiuj" Text="montri ĉiujn, eĉ tiujn sen enhavoj"/>
     <span>
         <div>
-            Serĉu tra ĉiu
-            <RadzenDropDown OpenOnFocus="true"
-                            Placeholder="Vortspeco..."
-                            Data=@(new string[]{"vorto", "difino", "ekzemplo", "traduko"})
-                            Value=@serĉtipo
-                            ValueChanged=@TraktiTipoŜanĝo
-                            TValue=string/>
+            Serĉu
             <RadzenDropDown OpenOnFocus="true"
                             Multiple="true" 
                             Placeholder="Vortspecoj..." 
                             Data=@(new string[]{"bazvortojn", "finaĵojn", "kunmetaĵojn"}) 
                             @bind-Value=@TrovuStrings
                             SelectAllText="ĉiujn"/>
+             tra ĉiu
+            <RadzenDropDown OpenOnFocus="true"
+                            Placeholder="Vortspeco..."
+                            Data=@(new string[]{"vorto", "difino", "ekzemplo", "traduko"})
+                            Value=@serĉtipo
+                            ValueChanged=@TraktiTipoŜanĝo
+                            TValue=string/>
             el fontoj
             <RadzenDropDown OpenOnFocus="true"
                             Multiple="true" 
@@ -35,12 +36,12 @@
             <input type="checkbox" id="tradukoj" @bind="@ĈuMontriTradukojn"/><label for="tradukoj">tradukon</label>
             @if(ĈuMontriTradukojn!.Value)
             {
-                <select @bind="@Lingvo" @oninput="@TraktiElektaŜanĝo">
-                    @foreach(var l in lingvoj?.Where(l=>l.Id != "eo") ?? new List<Lingvo>())
-                    {
-                        <option value="@l.Id">@l.Nomo</option>
-                    }
-                </select>
+                <RadzenDropDown @bind-Value="@Lingvo"
+                                TValue="string"
+                                Data="@(lingvoj?.Where(l=>l.Id != "eo") ?? new List<Lingvo>())" 
+                                ValueProperty="Id" 
+                                TextProperty="Nomo"/>
+
             }
         </div>
         <div>        
@@ -65,7 +66,7 @@ else
     {
         foreach(var vorto in ŜarĝitajVortoj)
         {
-            <p>
+            <RadzenCard>
                 <h3>
                     @if(vorto.Teksto is not null || vorto.Radikoj.Any(r=>r.RadikaVorto is not null))
                     {
@@ -117,7 +118,7 @@ else
                         <p lang="@Lingvo">@((MarkupString)Markdig.Markdown.ToHtml(vorto.Tradukoj[0].Teksto))</p>
                     }
                 }
-            </p>
+            </RadzenCard>
         }
     }
     else
