@@ -7,19 +7,26 @@
     <input type="checkbox" id="ĉiuj" @bind="@montriĈiujn"/><label for="ĉiuj">montri ĉiujn, eĉ tiujn sen enhavoj</label>
     <span>
         <div>
-            Serĉu 
-            <select value="@serĉtipo" @oninput="@TraktiTipoŜanĝo">
-                <option value="vorto">vortojn</option>
-                <option value="difino">difinojn</option>
-                <option value="ekzemplo">ekzemplojn</option>
-                <option value="traduko">tradukojn</option>
-            </select>
-        </div>
-        <div>
-            Trovu
-            <input type="checkbox" @bind="@ĈuMontriBazvortojn" id="vortoj"/><label for="vortoj">bazvortojn</label>
-            <input type="checkbox" @bind="@ĈuMontriFinaĵojn" id="finaĵoj"/><label for="finaĵoj">finaĵojn</label>
-            <input type="checkbox" @bind="@ĈuMontriKunmetaĵojn" id="kunmetaĵoj"/><label for="kunmetaĵoj">kunmetaĵojn</label>
+            Serĉu tra ĉiu
+            <RadzenDropDown OpenOnFocus="true"
+                            Placeholder="Vortspeco..."
+                            Data=@(new string[]{"vorto", "difino", "ekzemplo", "traduko"})
+                            Value=@serĉtipo
+                            ValueChanged=@TraktiTipoŜanĝo
+                            TValue=string/>
+            <RadzenDropDown OpenOnFocus="true"
+                            Multiple="true" 
+                            Placeholder="Vortspecoj..." 
+                            Data=@(new string[]{"bazvortojn", "finaĵojn", "kunmetaĵojn"}) 
+                            @bind-Value=@TrovuStrings
+                            SelectAllText="ĉiujn"/>
+            el fontoj
+            <RadzenDropDown OpenOnFocus="true"
+                            Multiple="true" 
+                            Placeholder="Fontoj..." 
+                            Data=@(new string[]{"oficialaj", "uzantaj"}) 
+                            @bind-Value=@FontoStrings
+                            SelectAllText="ĉiuj"/>  
         </div>
         <div>
             Montru la plej alta(j)n
@@ -36,10 +43,7 @@
                 </select>
             }
         </div>
-        <div>
-            el fontoj
-            <input type="checkbox" id="oficialaj" @bind="@UzuOficialajnFontojn"/><label for="oficialaj">oficialaj</label>
-            <input type="checkbox" id="uzantaj" @bind="@UzuUzantajnFontojn"/><label for="uzantaj">uzantaj</label>            
+        <div>        
         </div>
     </span>
 </div>

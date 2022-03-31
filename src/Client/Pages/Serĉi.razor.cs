@@ -180,6 +180,44 @@ public sealed partial class Serĉi
     }
     private bool uzf = true;
 
+    public IEnumerable<string> TrovuStrings 
+    {
+        get
+        {
+            var l = new List<string>();
+            if(ĈuMontriBazvortojn!.Value) l.Add("bazvortojn");
+            if(ĈuMontriFinaĵojn!.Value) l.Add("finaĵojn");
+            if(ĈuMontriKunmetaĵojn!.Value) l.Add("kunmetaĵojn");
+            return l;
+        }
+        set
+        {
+            if(ĈuMontriBazvortojn != value.Contains("bazvortojn"))
+                ĈuMontriBazvortojn = value.Contains("bazvortojn");
+            if(ĈuMontriFinaĵojn != value.Contains("finaĵojn"))
+                ĈuMontriFinaĵojn = value.Contains("finaĵojn");
+            if(ĈuMontriKunmetaĵojn != value.Contains("kunmetaĵojn"))
+                ĈuMontriKunmetaĵojn = value.Contains("kunmetaĵojn");
+        }
+    }
+    
+    public IEnumerable<string> FontoStrings 
+    {
+        get
+        {
+            var l = new List<string>();
+            if(UzuOficialajnFontojn!.Value) l.Add("oficialaj");
+            if(UzuUzantajnFontojn!.Value) l.Add("uzantaj");
+            return l;
+        }
+        set
+        {
+            if(UzuOficialajnFontojn != value.Contains("oficialaj"))
+                UzuOficialajnFontojn = value.Contains("oficialaj");
+            if(UzuUzantajnFontojn != value.Contains("uzantaj"))
+                UzuUzantajnFontojn = value.Contains("uzantaj");
+        }
+    }
 
     JsonSerializerOptions options = new JsonSerializerOptions
     {
@@ -237,10 +275,10 @@ public sealed partial class Serĉi
             PetaFrazo($"/serĉi/{Serĉtipo}/{Uri.EscapeDataString( a.Value!.ToString()!)}")); 
     }
     
-    public void TraktiTipoŜanĝo(ChangeEventArgs a)
+    public void TraktiTipoŜanĝo(object a)
     {
         NavigationManager.NavigateTo(
-            PetaFrazo($"/serĉi/{ a.Value!.ToString()!}/{Uri.EscapeDataString(Serĉfrazo)}"));
+            PetaFrazo($"/serĉi/{a.ToString()!}/{Uri.EscapeDataString(Serĉfrazo)}"));
     }
 
     public void TraktiElektaŜanĝo()
