@@ -37,21 +37,20 @@ public class DifinoController : ControllerBase
 
         // se la uzanto ne uzas RegEsp, ni povas simple kontroli
         // .Contains en la db   
-        if(Regex.Escape(s) == s)
-        {
-            return _context.Difinoj
+        var q = Regex.Escape(s) == s
+            ? _context.Difinoj
                 .Where(e => 
                     ((off && !e.Fonto.ĈuUzantkreita) || (uzf && e.Fonto.ĈuUzantkreita))
                         && e.Teksto.Contains(serĉfrazo))
-                .Select(e => e.Vorto)
-                .ToArray();
-        }
-        return _context.Difinoj
-            .Where(e => 
-                    ((off && !e.Fonto.ĈuUzantkreita) || (uzf && e.Fonto.ĈuUzantkreita))
-                        && Regex.IsMatch(e.Teksto, s))
-            .Select(e => e.Vorto)
-            .ToArray();      
+            : _context.Difinoj
+                .Where(e => 
+                        ((off && !e.Fonto.ĈuUzantkreita) || (uzf && e.Fonto.ĈuUzantkreita))
+                            && Regex.IsMatch(e.Teksto, s));
+                            
+        var a = q.Select(e => e.Vorto).ToArray();
+
+        foreach(var v in a) _context.Entry(v).Reference(v=>v.Fonto).Load();
+        return a;    
     }
 
     
