@@ -63,6 +63,9 @@ namespace vortaro.Server.Migrations
                     b.Property<string>("Ligilo")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Signo")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Titolo")
                         .HasColumnType("longtext");
 
@@ -171,12 +174,17 @@ namespace vortaro.Server.Migrations
                     b.Property<Guid?>("FinaĵoId")
                         .HasColumnType("char(36)");
 
+                    b.Property<Guid>("FontoId")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("Teksto")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FinaĵoId");
+
+                    b.HasIndex("FontoId");
 
                     b.ToTable("Vortoj");
                 });
@@ -282,7 +290,15 @@ namespace vortaro.Server.Migrations
                         .WithMany()
                         .HasForeignKey("FinaĵoId");
 
+                    b.HasOne("Fonto", "Fonto")
+                        .WithMany()
+                        .HasForeignKey("FontoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Finaĵo");
+
+                    b.Navigation("Fonto");
                 });
 
             modelBuilder.Entity("Difino", b =>

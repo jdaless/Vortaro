@@ -65,7 +65,18 @@ else
                 <h3>
                     @if(vorto.Teksto is not null || vorto.Radikoj.Any(r=>r.RadikaVorto is not null))
                     {
-                        @vorto.ToString()
+                        @if(vorto.Teksto is not null)
+                        {
+                            @vorto.Teksto<sup style="top: -.75em;font-size: .5em" title=@(vorto.Fonto.Titolo ?? "Uzanto") @onclick="@(_=>{if(vorto.Fonto.Ligilo is not null) NavigationManager.NavigateTo(vorto.Fonto.Ligilo);})">@vorto.Fonto.Signo</sup>@vorto.Finaĵo?.Teksto?.ToString().Trim('-').First()
+                        }
+                        else
+                        {
+                            @foreach (var radiko in vorto.Radikoj)
+                            {
+                                @radiko.RadikaVorto.Teksto!.Trim('-')<sup style="top: -.75em;font-size: .5em" title=@(radiko.RadikaVorto.Fonto.Titolo ?? "Uzanto") @onclick="@(_=>{if(radiko.RadikaVorto.Fonto.Ligilo is not null) NavigationManager.NavigateTo(radiko.RadikaVorto.Fonto.Ligilo);})">@radiko.RadikaVorto.Fonto.Signo</sup>
+                            }
+                            @vorto.Finaĵo?.Teksto?.ToString().Trim('-').First()
+                        }
                     }
                     <NavLink href=@($"/vorto/{vorto.Id}")>🡺</NavLink>
                 </h3>

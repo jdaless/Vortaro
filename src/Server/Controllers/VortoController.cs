@@ -50,7 +50,7 @@ public class VortoController : ControllerBase
                     WHERE instr(REPLACE(CONCAT(IFNULL(A.Teksto,L.Teksto),IFNULL(F.Teksto,"""")),""-"",""""), {s}) > 0";
             var q = _context.Vortoj
                 .FromSqlInterpolated(petastring);                      
-            return q.ToArray();
+            return q.Include(v => v.Fonto).ToArray();
         }
         else
         {
@@ -73,7 +73,7 @@ public class VortoController : ControllerBase
                     WHERE REPLACE(CONCAT(IFNULL(A.Teksto,L.Teksto),IFNULL(F.Teksto,"""")),""-"","""") REGEXP {s}";
             var q = _context.Vortoj
                 .FromSqlInterpolated(petastring);                      
-            return q.ToArray();
+            return q.Include(v => v.Fonto).ToArray();
         }
     }
     
@@ -86,6 +86,7 @@ public class VortoController : ControllerBase
             NotFound();
             return null!;
         }
+        await _context.Entry(vorto).Reference(v => v.Fonto).LoadAsync();
         return vorto;
     }
 

@@ -8,6 +8,7 @@ namespace vortaro.Client.Pages;
 public sealed partial class Aldoni
 {
     [Inject] APIServo APIServo {get; set; } = null!;
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider {get; set; }  = null!;
 
     List<string> validajFinaĵoj = new()
     {
@@ -80,7 +81,13 @@ public sealed partial class Aldoni
             {
                 RadikaVortoId = v.Id,
                 Ordo = i 
-            }).ToList()
+            }).ToList(),
+            Fonto = new()
+            {
+                ĈuUzantkreita = true,
+                KreintoId = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.FindFirst("sub")!.Value,
+                Signo = "*",
+            }
         };
         await APIServo.APIPostAuth("vorto",vorto);
     }

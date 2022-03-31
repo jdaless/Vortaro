@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace vortaro.Server.Migrations
 {
     [DbContext(typeof(VortaroContext))]
-    [Migration("20220329211505_InitialCreate")]
+    [Migration("20220331005721_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,6 +63,9 @@ namespace vortaro.Server.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Ligilo")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Signo")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Titolo")
@@ -173,12 +176,17 @@ namespace vortaro.Server.Migrations
                     b.Property<Guid?>("FinaĵoId")
                         .HasColumnType("char(36)");
 
+                    b.Property<Guid>("FontoId")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("Teksto")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FinaĵoId");
+
+                    b.HasIndex("FontoId");
 
                     b.ToTable("Vortoj");
                 });
@@ -284,7 +292,15 @@ namespace vortaro.Server.Migrations
                         .WithMany()
                         .HasForeignKey("FinaĵoId");
 
+                    b.HasOne("Fonto", "Fonto")
+                        .WithMany()
+                        .HasForeignKey("FontoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Finaĵo");
+
+                    b.Navigation("Fonto");
                 });
 
             modelBuilder.Entity("Difino", b =>

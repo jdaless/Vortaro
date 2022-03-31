@@ -17,6 +17,10 @@ public class Vorto
     [JsonIgnore]
     public List<Traduko> Tradukoj {get; set; } = new();
 
+    public Fonto Fonto {get; set; } = null!;
+
+    public Guid FontoId {get; set; }
+
     public bool ĈuFinaĵo => Teksto is not null && Teksto.StartsWith("-") && !Teksto.EndsWith("-");
 
     public bool ĈuRadiko => !Radikoj.Any();
@@ -26,8 +30,8 @@ public class Vorto
     public override string ToString()
     {
         return Teksto is not null
-            ? Teksto + (new string(Finaĵo?.ToString().Trim('-').Prepend('/').ToArray()) ?? string.Empty) //bazvortoj kun/sen finaĵo
-            : (string.Join("/",Radikoj.OrderBy(r => r.Ordo).Select(r => r.RadikaVorto.Teksto!.Trim('-'))) + "/" + Finaĵo?.ToString().Trim('-')); //ĉiuj el la radikoj
+            ? Teksto + Finaĵo?.ToString().Trim('-').First()  //bazvortoj kun/sen finaĵo
+            : (string.Join(string.Empty,Radikoj.OrderBy(r => r.Ordo).Select(r => r.RadikaVorto.Teksto!.Trim('-'))) + Finaĵo?.ToString().Trim('-').First()); //ĉiuj el la radikoj
 
     }
 }

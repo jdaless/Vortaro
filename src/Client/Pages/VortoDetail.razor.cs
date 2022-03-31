@@ -10,6 +10,7 @@ public sealed partial class VortoDetail
     [Inject] IHttpClientFactory HttpClientFactory {get; set; } = null!;
     [Inject] APIServo APIServo {get; set; } = null!;
     [Inject] AuthenticationStateProvider AuthenticationStateProvider {get; set; }  = null!;
+    [Inject] NavigationManager NavigationManager {get; set; }  = null!;
 
     [Parameter] public Guid Id {get; set;}
 
@@ -47,7 +48,7 @@ public sealed partial class VortoDetail
 
 
         var v = await APIServo.APIPeto<Vorto>($"vorto/{Id}");
-
+        v.Fonto = fontoj[v.FontoId];
         if(v!.FinaĵoId is not null)
             v.Finaĵo = await APIServo.APIPeto<Vorto>($"vorto/{v.FinaĵoId}");
         

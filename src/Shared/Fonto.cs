@@ -12,4 +12,6 @@ public class Fonto
 
     public Uzanto? Kreinto{get; set;}
     public List<Voĉdono> Voĉdonoj {get; set;} = new();
+
+    public string? Signo {get; set;}
 }

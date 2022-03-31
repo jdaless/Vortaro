@@ -7,8 +7,33 @@
 else
 {
     <PageTitle>@vorto.ToString()</PageTitle>
-    <h1>@vorto.ToString()</h1>
+    <h1>
+        @if(vorto.Teksto is not null)
+        {
+            @vorto.Teksto<sup style="top: -.75em;font-size: .5em" title=@(vorto.Fonto.Titolo ?? "Uzanto") @onclick="@(_=>{if(vorto.Fonto.Ligilo is not null) NavigationManager.NavigateTo(vorto.Fonto.Ligilo);})">@vorto.Fonto.Signo</sup>@vorto.Finaĵo?.Teksto?.ToString().Trim('-').First()
+        }
+        else
+        {
+            @foreach (var radiko in vorto.Radikoj)
+            {
+                @radiko.RadikaVorto.Teksto!.Trim('-')<sup style="top: -.75em;font-size: .5em" title=@(radiko.RadikaVorto.Fonto.Titolo ?? "Uzanto") @onclick="@(_=>{if(radiko.RadikaVorto.Fonto.Ligilo is not null) NavigationManager.NavigateTo(radiko.RadikaVorto.Fonto.Ligilo);})">@radiko.RadikaVorto.Fonto.Signo</sup>
+            }
+            @vorto.Finaĵo?.Teksto?.ToString().Trim('-').First()
+        }
+    </h1>
     <h3>Informaĵo</h3>
+    <h4>Fonto</h4>
+    <p>
+    @if(vorto.Fonto.ĈuUzantkreita)
+    {
+        @("Uzanto: " + vorto.Fonto.Kreinto!.Nomo)
+    }
+    else
+    {
+        @vorto.Fonto.Titolo
+        <NavLink href=@(vorto.Fonto.Ligilo)>🡺</NavLink>
+    }
+    </p>
     @if(vorto.Teksto is not null)
     {
         <p>Ĉi tiu vorto estas bazvorto.</p>
