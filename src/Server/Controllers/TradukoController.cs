@@ -39,21 +39,28 @@ public class TradukoController : ControllerBase
         // .Contains en la db   
         if(Regex.Escape(s) == s)
         {
-            return _context.Tradukoj
+            var a = _context.Tradukoj
                 .Where(e => 
                     ((off && !e.Fonto.ĈuUzantkreita) || (uzf && e.Fonto.ĈuUzantkreita))
                         && e.LingvoId == lingvo
                         && e.Teksto.Contains(serĉfrazo))
                 .Select(e => e.Vorto)
                 .ToArray();
+            foreach(var v in a) _context.Entry(v).Reference(v=>v.Fonto).Load();
+            return a;
         }
-        return _context.Tradukoj
-            .Where(e => 
-                    ((off && !e.Fonto.ĈuUzantkreita) || (uzf && e.Fonto.ĈuUzantkreita))
-                        && e.LingvoId == lingvo
-                        && Regex.IsMatch(e.Teksto, s))
-            .Select(e => e.Vorto)
-            .ToArray();   
+        else
+        {
+            var a = _context.Tradukoj
+                .Where(e => 
+                        ((off && !e.Fonto.ĈuUzantkreita) || (uzf && e.Fonto.ĈuUzantkreita))
+                            && e.LingvoId == lingvo
+                            && Regex.IsMatch(e.Teksto, s))
+                .Select(e => e.Vorto)
+                .ToArray();               
+            foreach(var v in a) _context.Entry(v).Reference(v=>v.Fonto).Load();
+            return a;
+        }
     }
 
     
