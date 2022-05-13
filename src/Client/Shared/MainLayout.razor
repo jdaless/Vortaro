@@ -3,23 +3,50 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
-<div class="page">
 
-    <main>
-        <div class="top-row px-4">
+<MudBreakpointProvider>
+    <MudLayout>
+        <MudAppBar Elevation="1" Color=Color.Primary>
+            <MudText Typo="Typo.h5" Class="ml-3">
+                <MudHidden Breakpoint=Breakpoint.MdAndUp Invert=true>Universala Vortaro Demokratia</MudHidden>
+                <MudHidden Breakpoint=Breakpoint.MdAndUp>UVD</MudHidden>
+            </MudText>
+            <MudSpacer />
+            @if(lingvoj is not null)
+            {
+                <MudMenu StartIcon="@Icons.Filled.Translate" EndIcon="@Icons.Filled.KeyboardArrowDown" Label=@(prepariLingvon(lingvoj[Lingvo].Nomo)) Color="Color.Inherit" Variant="Variant.Text">
+                    @foreach (var l in lingvoj.Where(ling=>ling.Key != "eo").OrderBy(ling=>ling.Value.Nomo.Replace("La ",string.Empty)))
+                    {
+                        <MudMenuItem OnClick=@(e => ŜanĝiLingvon(l.Key))>@l.Value.Nomo</MudMenuItem>
+                    }
+                </MudMenu>
+            }
             <AuthorizeView>
                 <Authorized>
-                    <NavLink href="/uzanto">@context.User.Identity!.Name</NavLink>
-                    <NavLink href="/krei">Aldoni</NavLink>
+                    <MudButton Color="Color.Inherit" Variant="Variant.Text" Href="/krei">Aldoni</MudButton>
                 </Authorized>
             </AuthorizeView>
-            <NavLink href="/serĉi/vorto">Serĉi</NavLink>
-            <NavLink href="https://github.com/jdaless/Vortaro">Pri</NavLink>
+            <MudButton Color="Color.Inherit" Variant="Variant.Text" Href="/serĉi/vorto">serĉi</MudButton>
+            <MudButton Color="Color.Inherit" Variant="Variant.Text" Href="https://github.com/jdaless/Vortaro">pri</MudButton>
             <AccessControl/>
-        </div>
+            
+        </MudAppBar>
+        <MudMainContent>
+            <CascadingValue Value=Lingvo>
+                @Body
+            </CascadingValue>
+        </MudMainContent>
+    </MudLayout>
+</MudBreakpointProvider>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+<MudThemeProvider 
+    Theme="new()
+    {
+        Palette = new()
+        {
+            Primary = Colors.Green.Default,
+            Secondary = Colors.Orange.Default
+        },
+    }"/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>

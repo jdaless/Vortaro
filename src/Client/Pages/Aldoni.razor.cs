@@ -9,6 +9,7 @@ public sealed partial class Aldoni
 {
     [Inject] APIServo APIServo {get; set; } = null!;
     [Inject] AuthenticationStateProvider AuthenticationStateProvider {get; set; }  = null!;
+    [Inject] NavigationManager NavigationManager {get;set;} = null;
 
     List<string> validajFinaĵoj = new()
     {
@@ -89,7 +90,8 @@ public sealed partial class Aldoni
                 Signo = "*",
             }
         };
-        await APIServo.APIPostAuth("vorto",vorto);
+        var v = await APIServo.APIPostAuth("vorto",vorto);
+        NavigationManager.NavigateTo($"/vorto/{v.Id}");
     }
 
 }

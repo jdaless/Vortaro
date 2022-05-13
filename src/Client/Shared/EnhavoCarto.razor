@@ -1,0 +1,43 @@
+@typeparam T where T : Enhavo
+
+<MudCard Class="ma-2">
+    <MudCardContent>
+        <MudStack Row=true>
+            @if(Enhavo.Fonto.ĈuUzantkreita)
+            {            
+                <MudStack Justify=@Justify.Center AlignItems=AlignItems.Center>
+                    <AuthorizeView>
+                        <MudIconButton OnClick="@(() => Suprigu.InvokeAsync(Enhavo))" Icon=@Icons.Filled.ArrowUpward Size="Size.Small"/>
+                    </AuthorizeView>
+                    @Enhavo.Fonto.Favoreco 
+                    <AuthorizeView>
+                        <MudIconButton OnClick="@(() => Malsuprigu.InvokeAsync(Enhavo))" Icon=@Icons.Filled.ArrowDownward Size="Size.Small"/>
+                    </AuthorizeView>
+                </MudStack>
+            }
+            <blockquote cite="@Enhavo.Fonto.Ligilo">@((MarkupString)Markdig.Markdown.ToHtml(Enhavo.Teksto))</blockquote>
+        </MudStack>  
+    </MudCardContent>
+    <MudCardActions>
+        <MudSpacer/>
+        @if(Enhavo.Fonto.ĈuUzantkreita)
+        {            
+            <NavLink href=@($"/uzanto/{Enhavo.Fonto.Kreinto!.Id}")>
+                <MudAvatar Image=@Enhavo.Fonto.Kreinto.Bildo Size="Size.Medium"/> <i>@Enhavo.Fonto.Kreinto.Nomo</i>
+            </NavLink>
+        }
+        else
+        {
+            <NavLink href="@Enhavo.Fonto.Ligilo"><i>@Enhavo.Fonto.Titolo</i></NavLink>
+        }
+    </MudCardActions>
+</MudCard>
+
+@code
+{
+    [Parameter] public T Enhavo {get; set;} = null!;
+
+    [Parameter] public EventCallback<Enhavo> Suprigu {get; set;}
+
+    [Parameter] public EventCallback<Enhavo> Malsuprigu {get; set;}
+}
