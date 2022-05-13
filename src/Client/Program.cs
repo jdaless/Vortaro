@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using vortaro.Client;
+using MudBlazor.Services;
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -27,6 +28,7 @@ builder.Services.AddHttpClient(
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
         .CreateClient("ServerAPI"));
 
+builder.Services.AddMudServices();
 builder.Services.AddTransient<APIServo>();
 builder.Services.AddTransient<LokaMemoro>();
 

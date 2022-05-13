@@ -1,0 +1,68 @@
+@typeparam T where T : Enhavo
+
+<MudGrid Spacing=0>
+    <MudItem xs=12 sm=12 md=6 >
+        <MudHidden Breakpoint="Breakpoint.SmAndDown">
+            <MudText Typo=Typo.h6>Oficialaj</MudText>
+        </MudHidden>
+        @foreach (var item in Enhavoj.Where(d=>!d.Fonto.ĈuUzantkreita))
+        {                                
+            <EnhavoCarto T=T Enhavo=item Suprigu=Suprigu Malsuprigu=Malsuprigu />
+        }
+        @if(!Enhavoj.Any(d=>!d.Fonto.ĈuUzantkreita))
+        {
+            <i style="color:grey">Tiu ĉi vorto ne havas @typeof(T).Name.ToLower()n oficialan.</i>
+        }
+    </MudItem>
+    <MudItem xs=12 sm=12 md=6 >
+        <MudHidden Breakpoint="Breakpoint.SmAndDown">
+            <MudText Typo=Typo.h6>Uzantaj</MudText>
+        </MudHidden>
+        @foreach (var item in Enhavoj.Where(d=>d.Fonto.ĈuUzantkreita))
+        {
+            <EnhavoCarto T=T Enhavo=item Suprigu=Suprigu Malsuprigu=Malsuprigu />
+        }
+        @if(!Enhavoj.Any(d=>d.Fonto.ĈuUzantkreita))
+        {
+            <i style="color:grey">Tiu ĉi vorto ne havas @typeof(T).Name.ToLower()n uzantan. <AuthorizeView>Bonvolu aldoni!</AuthorizeView></i>
+        }
+        <AuthorizeView>
+                @if(ĉuAldoni)
+                {
+                    <MudCard Class="ma-2" Style="min-height: 188.825px">
+                        <MudCardContent>
+                            
+                            <MudTextField T="string" Label=@($"Nova {typeof(T).Name}") Variant="Variant.Filled" @bind-Text="@nova" Immediate Lines="3" />
+                            <MudField Label="Aspekto" Variant=@Variant.Outlined Class="mt-4">
+                                @((MarkupString)Markdig.Markdown.ToHtml(nova))
+                            </MudField>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudSpacer/>
+                            <MudIconButton Icon=@Icons.Filled.Send OnClick="@(_=>Sendi.InvokeAsync(nova))"/>
+                        </MudCardActions>
+                    </MudCard>  
+                }
+                else
+                {  
+                    <MudStack Justify=@Justify.Center AlignItems=AlignItems.Center>                                            
+                        <MudIconButton Icon=@Icons.Filled.Add OnClick="@(()=>ĉuAldoni = true)" Class="ma-4" Color=Color.Primary/>  
+                    </MudStack>             
+                }
+        </AuthorizeView>  
+    </MudItem>
+</MudGrid>
+
+@code{
+    [Parameter] public IEnumerable<T> Enhavoj {get; set;} = null!;
+
+    [Parameter] public EventCallback<Enhavo> Suprigu {get; set;}
+
+    [Parameter] public EventCallback<Enhavo> Malsuprigu {get; set;}        
+
+    [Parameter] public EventCallback<string> Sendi {get; set;}
+
+    private bool ĉuAldoni = false;
+
+    private string nova = string.Empty;
+}

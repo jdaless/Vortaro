@@ -6,10 +6,10 @@
 
 <AuthorizeView>
     <Authorized>
-        <a href="#" @onclick="BeginSignOut">Elsaluti</a>
+        <MudButton Variant=Variant.Text Color=Color.Inherit Href="#" OnClick="BeginSignOut">Elsaluti</MudButton>
     </Authorized>
     <NotAuthorized>
-        <a href="authentication/login">Ensaluti</a>
+        <MudButton Variant=Variant.Text Color=Color.Inherit Href="authentication/login">Ensaluti</MudButton>
     </NotAuthorized>
 </AuthorizeView>
 

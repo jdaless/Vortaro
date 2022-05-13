@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Text.Json;
+using MudBlazor.Services;
 
 namespace vortaro.Client.Pages;
 
@@ -10,8 +11,10 @@ public sealed partial class VortoDetail
     [Inject] IHttpClientFactory HttpClientFactory {get; set; } = null!;
     [Inject] APIServo APIServo {get; set; } = null!;
     [Inject] AuthenticationStateProvider AuthenticationStateProvider {get; set; }  = null!;
-    [Inject] NavigationManager NavigationManager {get; set; }  = null!;
 
+    [Inject] IBreakpointService BreakpointListener { get; set; } = null!;
+    [Inject] NavigationManager NavigationManager {get; set; }  = null!;
+    [CascadingParameter] string Lingvo {get; set;} = null!;
     [Parameter] public Guid Id {get; set;}
 
     Vorto? vorto;
@@ -23,15 +26,10 @@ public sealed partial class VortoDetail
 
     private Dictionary<Guid,Fonto>? fontoj = null;
 
-    private bool ĉuAldoniEkzemplo = false;
-    private string ekzemplo = string.Empty;
-    private bool ĉuAldoniDifino = false;
-    private string difino = string.Empty;
-    private string? ĉuAldoniTraduko = null;
-    private string traduko = string.Empty;
-
     private List<Lingvo>? lingvoj = null;
     protected override Task OnParametersSetAsync() => OnInitializedAsync();
+
+    bool malebligiPanelojn = true;
 
     protected override async Task OnInitializedAsync()
     {  
@@ -46,6 +44,13 @@ public sealed partial class VortoDetail
         foreach(var f in fontoj.Values)
             await APIServo.ŜarĝiguFonton(f);
 
+        await BreakpointListener.Subscribe(b =>
+        {
+            Console.WriteLine("size: " + b.ToString() + " " + (int)b);
+            malebligiPanelojn = b.CompareTo(MudBlazor.Breakpoint.Md) < 0;
+            StateHasChanged();
+        });
+        malebligiPanelojn = await BreakpointListener.IsMediaSize(MudBlazor.Breakpoint.SmAndDown);
 
         var v = await APIServo.APIPeto<Vorto>($"vorto/{Id}");
         v.Fonto = fontoj[v.FontoId];
@@ -104,7 +109,7 @@ public sealed partial class VortoDetail
     }
 
     [Authorize]
-    async Task SendiEnhavo<T>(string enaĵo, string? ling = null) where T : Enhavo, new()
+    async Task SendiEnhavo<T>(string enaĵo) where T : Enhavo, new()
     {
         if(string.IsNullOrEmpty(enaĵo)) return;
         var fonto = new Fonto()
@@ -120,22 +125,16 @@ public sealed partial class VortoDetail
             FontoId = fonto.Id,
             VortoId = vorto!.Id
         };
-        if(enhavo is Traduko t) t.LingvoId = ling!;
+        if(enhavo is Traduko t) t.LingvoId = Lingvo;
         //sendi enhavon
         Console.WriteLine(JsonSerializer.Serialize(enhavo));
         await APIServo.APIPostAuth(typeof(T).Name.ToLower(), enhavo);
-        ĉuAldoniDifino = false;
-        difino = string.Empty;
-        ĉuAldoniEkzemplo = false;
-        ekzemplo = string.Empty;
-        ĉuAldoniTraduko =  null;
-        ekzemplo= string.Empty;
         fontoj = (await APIServo.APIPeto<List<Fonto>>($"fonto"))
                 .ToDictionary(f=>f.Id, f=>f);
         foreach(var f in fontoj.Values)
             await APIServo.ŜarĝiguFonton(f);
         await ŜarĝiguEnhavojn();
-    }
+    }    
 
     [Authorize]
     async Task Malsuprigu(Enhavo enhavo)

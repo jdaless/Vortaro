@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Components;
 using System.Diagnostics;
 using System.Text.Json;
+using MudBlazor;
+using System.Globalization;
 
 namespace vortaro.Client.Pages;
 
@@ -13,6 +15,12 @@ public sealed partial class Serĉi
     [Inject] LokaMemoro LokaMemoro {get; set; } = null!;
     
     [Inject] APIServo APIServo {get; set; } = null!;
+
+    [Inject] IDialogService DialogService {get; set;} = null!;
+
+
+    [CascadingParameter]
+    string Lingvo {get; set;} = null!;
 
     [Parameter]
     public string Serĉfrazo 
@@ -133,22 +141,6 @@ public sealed partial class Serĉi
 
 
     [Parameter]
-    [SupplyParameterFromQuery(Name = "lingvo")]
-    public string? Lingvo
-    {
-        get => lingvo; 
-        set 
-        {
-            if(init & lingvo != (lingvo = value ?? lingvo)) 
-            {
-                LokaMemoro.Meti("lingvo", lingvo);
-                TraktiElektaŜanĝo();
-            }
-        } 
-    }
-    private string lingvo = "en";
-
-    [Parameter]
     [SupplyParameterFromQuery(Name = "off")]
     public bool? UzuOficialajnFontojn
     {
@@ -188,8 +180,6 @@ public sealed partial class Serĉi
 
     HttpClient _httpClient = null!;
 
-    private List<Lingvo>? lingvoj = null;
-
     private Dictionary<Guid,Fonto>? fontoj = null;
 
 
@@ -204,15 +194,12 @@ public sealed partial class Serĉi
 
     private bool montriĈiujn = false;
 
+    private bool ĉuAgordojMalfermitaj = false;
+
     protected override async Task OnInitializedAsync()
     {  
         _httpClient = HttpClientFactory.CreateClient("Unauthenticated");
-        _ = ŜarĝiguVortojn();
-        _ = Task.Run(async ()=>
-            {
-                lingvoj = await APIServo.APIPeto<List<Lingvo>>($"lingvo");
-                await InvokeAsync(StateHasChanged);
-            });                            
+        _ = ŜarĝiguVortojn();                     
         _ = Task.Run(async ()=>
             fontoj = (await APIServo.APIPeto<List<Fonto>>($"fonto"))
                 .ToDictionary(f=>f.Id, f=>f));
@@ -222,31 +209,36 @@ public sealed partial class Serĉi
         _ = Task.Run(async ()=> dif = await LokaMemoro.PreniBool("dif") ?? true);
         _ = Task.Run(async ()=> ekz = await LokaMemoro.PreniBool("ekz") ?? true);
         _ = Task.Run(async ()=> tra = await LokaMemoro.PreniBool("tra") ?? true);
-        _ = Task.Run(async ()=> lingvo = await LokaMemoro.PreniString("lingvo") ?? "en");
         _ = Task.Run(async ()=> off = await LokaMemoro.PreniBool("off") ?? true);
         _ = Task.Run(async ()=> uzf = await LokaMemoro.PreniBool("uzf") ?? true);
+
         await base.OnInitializedAsync(); 
         init = true;
     }
 
     protected override Task OnParametersSetAsync() => ŜarĝiguVortojn();    
 
-    public void TraktiFrazoŜanĝo(ChangeEventArgs a)
+    public void TraktiFrazoŜanĝo(string s)
     {
         NavigationManager.NavigateTo(
-            PetaFrazo($"/serĉi/{Serĉtipo}/{Uri.EscapeDataString( a.Value!.ToString()!)}")); 
+            PetaFrazo($"/serĉi/{Serĉtipo}/{Uri.EscapeDataString(s)}")); 
     }
     
-    public void TraktiTipoŜanĝo(ChangeEventArgs a)
+    public void TraktiTipoŜanĝo(string s)
     {
         NavigationManager.NavigateTo(
-            PetaFrazo($"/serĉi/{ a.Value!.ToString()!}/{Uri.EscapeDataString(Serĉfrazo)}"));
+            PetaFrazo($"/serĉi/{ s.ToString()!}/{Uri.EscapeDataString(Serĉfrazo)}"));
     }
 
     public void TraktiElektaŜanĝo()
     {
         NavigationManager.NavigateTo(
             PetaFrazo($"/serĉi/{Serĉtipo}/{Uri.EscapeDataString(Serĉfrazo)}"));
+    }
+
+    public void MalfermiAgordojn() 
+    {
+        ĉuAgordojMalfermitaj = true;
     }
 
     public async Task ŜarĝiguVortojn()
