@@ -17,7 +17,7 @@ public partial class MainLayout
 
     protected override async Task OnInitializedAsync()
     {
-        lingvoj = (await APIServo.APIPeto<List<Lingvo>>($"lingvo")).ToDictionary(l=>l.Id, l=>l);   
+        lingvoj = (await APIServo.APIPeto<List<Lingvo>>($"lingvo")).Where(l=> l.Id != "eo").ToDictionary(l=>l.Id, l=>l);   
         
         var memLing = await LokaMemoro.PreniString("lingvo");
         if(memLing is not null && memLing != "null") Lingvo = memLing;

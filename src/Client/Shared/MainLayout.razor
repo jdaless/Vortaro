@@ -15,7 +15,7 @@
             @if(lingvoj is not null)
             {
                 <MudMenu StartIcon="@Icons.Filled.Translate" EndIcon="@Icons.Filled.KeyboardArrowDown" Label=@(prepariLingvon(lingvoj[Lingvo].Nomo)) Color="Color.Inherit" Variant="Variant.Text">
-                    @foreach (var l in lingvoj.Where(ling=>ling.Key != "eo").OrderBy(ling=>ling.Value.Nomo.Replace("La ",string.Empty)))
+                    @foreach (var l in lingvoj.OrderBy(ling=>ling.Value.Nomo.Replace("La ",string.Empty)))
                     {
                         <MudMenuItem OnClick=@(e => ŜanĝiLingvon(l.Key))>@l.Value.Nomo</MudMenuItem>
                     }
