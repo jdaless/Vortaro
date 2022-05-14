@@ -19,6 +19,8 @@ public sealed partial class VortoDetail
 
     Vorto? vorto;
 
+    MudBlazor.MudTabs tabs = null!;
+
     JsonSerializerOptions options = new JsonSerializerOptions
     {
         PropertyNameCaseInsensitive = true
@@ -65,11 +67,21 @@ public sealed partial class VortoDetail
         v.Radikoj = radj.ToList();
         await InvokeAsync(StateHasChanged);
         vorto = v;
-        await ŜarĝiguEnhavojn();
         await base.OnInitializedAsync(); 
     }
 
-    async Task ŜarĝiguEnhavojn()
+    async Task ŜarĝiguDifinojn()
+    {
+        vorto!.Difinoj.Clear();
+        await foreach(var d in APIServo.ŜarĝiguDifinojn(vorto!))
+        {
+            d.Fonto = fontoj![d.FontoId];
+            vorto!.Difinoj.Add(d);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    async Task ŜarĝiguTradukojn()
     {
         vorto!.Tradukoj.Clear();
         await foreach(var t in APIServo.ŜarĝiguTradukojn(vorto!))
@@ -78,13 +90,10 @@ public sealed partial class VortoDetail
             vorto!.Tradukoj.Add(t);
             await InvokeAsync(StateHasChanged);
         }
-        vorto!.Difinoj.Clear();
-        await foreach(var d in APIServo.ŜarĝiguDifinojn(vorto!))
-        {
-            d.Fonto = fontoj![d.FontoId];
-            vorto!.Difinoj.Add(d);
-            await InvokeAsync(StateHasChanged);
-        }
+    }
+
+    async Task ŜarĝiguEkzemplojn()
+    {
         vorto!.Ekzemploj.Clear();
         await foreach(var e in APIServo.ŜarĝiguEkzemplojn(vorto!))
         {
@@ -92,7 +101,6 @@ public sealed partial class VortoDetail
             vorto!.Ekzemploj.Add(e);
             await InvokeAsync(StateHasChanged);
         }
-
     }
 
     string RadikaString(string s)
@@ -133,8 +141,18 @@ public sealed partial class VortoDetail
                 .ToDictionary(f=>f.Id, f=>f);
         foreach(var f in fontoj.Values)
             await APIServo.ŜarĝiguFonton(f);
-        await ŜarĝiguEnhavojn();
+        await ŜarĝiguNunanTabon(tabs.ActivePanelIndex);
     }    
+
+    Task ŜarĝiguNunanTabon(int i) =>
+        i switch
+        {
+            1 => ŜarĝiguDifinojn(),
+            2 => ŜarĝiguTradukojn(),
+            3 => ŜarĝiguEkzemplojn(),
+            _ => Task.CompletedTask
+        };
+
 
     [Authorize]
     async Task Malsuprigu(Enhavo enhavo)

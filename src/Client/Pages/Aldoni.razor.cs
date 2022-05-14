@@ -42,6 +42,7 @@ public sealed partial class Aldoni
     Guid? finaĵo;
     string? teksto;
 
+    string serĉfrazo;
     
     List<Vorto?>? finaĵoj;
     List<Vorto>? bazvortElektoj;
@@ -55,14 +56,14 @@ public sealed partial class Aldoni
     }
 
     async Task Serĉi(string s)
-    {
-        
+    {        
         var nePleneŜarĝigitaj = new List<Vorto>();
+        serĉfrazo = s;
         if(s != string.Empty)
         {
-             var v = await APIServo.APIPeto<List<Vorto>>($"vorto/{Uri.EscapeDataString(s)}");
-
-            bazvortElektoj = v.Where(v => v.ĈuRadiko).ToList(); 
+            var v = await APIServo.APIPeto<List<Vorto>>($"vorto/{Uri.EscapeDataString(s)}");
+            if(s == serĉfrazo)
+                bazvortElektoj = v.Where(v => v.ĈuRadiko).ToList(); 
         }
         else
             bazvortElektoj = new();
