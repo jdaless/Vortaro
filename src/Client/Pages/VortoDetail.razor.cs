@@ -8,7 +8,6 @@ namespace vortaro.Client.Pages;
 
 public sealed partial class VortoDetail
 {
-    [Inject] IHttpClientFactory HttpClientFactory {get; set; } = null!;
     [Inject] APIServo APIServo {get; set; } = null!;
     [Inject] AuthenticationStateProvider AuthenticationStateProvider {get; set; }  = null!;
 
