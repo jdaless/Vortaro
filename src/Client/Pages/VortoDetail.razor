@@ -7,7 +7,10 @@
     }
     else
     {
-        <PageTitle>@vorto.ToString()</PageTitle>
+        if(NavigationManager.Uri.EndsWith($"/vorto/{Id}"))
+        {
+            <PageTitle>@vorto.ToString()</PageTitle>
+        }
         <h1 class="pl-4">
             @if(vorto.Teksto is not null)
             {
