@@ -15,8 +15,15 @@
             @if(lingvoj is not null)
             {
                 <MudHidden Breakpoint=Breakpoint.MdAndUp Invert=true>
-                    <MudMenu StartIcon="@Icons.Filled.Translate" EndIcon="@Icons.Filled.KeyboardArrowDown" Label=@(prepariLingvon(lingvoj[Lingvo].Nomo)) Color="Color.Inherit" Variant="Variant.Text">
-                        @foreach (var l in lingvoj.OrderBy(ling=>ling.Value.Nomo.Replace("La ",string.Empty)))
+                    <MudMenu StartIcon="@Icons.Filled.Translate" 
+                                EndIcon="@Icons.Filled.KeyboardArrowDown" 
+                                Label=@(prepariLingvon(lingvoj[Lingvo].Nomo)) 
+                                Color="Color.Inherit" 
+                                Variant="Variant.Text"
+                                Origin="Origin.BottomCenter"
+                                Class="pt-0">
+                        <MudTextField Variant=Variant.Filled Label="Serĉu Lingvon" @bind-Value=@serĉLing Immediate/>
+                        @foreach (var l in lingvoj!.Where(ling=>ling.Value.Nomo.ToLower().Contains(serĉLing.ToLower())).OrderBy(ling=>ling.Value.Nomo.Replace("La ",string.Empty)))
                         {
                             <MudMenuItem OnClick=@(e => ŜanĝiLingvon(l.Key))>@l.Value.Nomo</MudMenuItem>
                         }
@@ -54,17 +61,21 @@
 
     
     <MudHidden Breakpoint=Breakpoint.MdAndUp>
-        <MudMenu >
-            <ActivatorContent>
-                <MudFab StartIcon=@Icons.Filled.Translate Class="z-30 ma-4" Style=" object-position: right bottom; position: fixed; bottom: 0%" />
-            </ActivatorContent>
-            <ChildContent>
-                @foreach (var l in lingvoj!.OrderBy(ling=>ling.Value.Nomo.Replace("La ",string.Empty)))
-                {
-                    <MudMenuItem OnClick=@(e => ŜanĝiLingvon(l.Key))>@l.Value.Nomo</MudMenuItem>
-                }
-            </ChildContent>
-        </MudMenu>
+        @if(lingvoj is not null)
+        {
+            <MudMenu Class="pt-0">
+                <ActivatorContent>
+                    <MudFab StartIcon=@Icons.Filled.Translate Class="z-30 ma-4" Style=" object-position: right bottom; position: fixed; bottom: 0%" />
+                </ActivatorContent>
+                <ChildContent>
+                    <MudTextField Variant=Variant.Filled Label="Serĉu Lingvon" @bind-Value=@serĉLing Immediate/>
+                    @foreach (var l in lingvoj!.Where(ling=>ling.Value.Nomo.ToLower().Contains(serĉLing.ToLower())).OrderBy(ling=>ling.Value.Nomo.Replace("La ",string.Empty)))
+                    {
+                        <MudMenuItem OnClick=@(e => ŜanĝiLingvon(l.Key))>@l.Value.Nomo</MudMenuItem>
+                    }
+                </ChildContent>
+            </MudMenu>
+        }
     </MudHidden>
 </MudBreakpointProvider>
 

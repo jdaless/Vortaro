@@ -18,6 +18,8 @@ public partial class MainLayout
     private bool malhela = false;
     private MudThemeProvider _mudThemeProvider = null!;
 
+    private string serĉLing = string.Empty;
+
     public MainLayout() : base()
     {
         var dark = new MudTheme().PaletteDark;
