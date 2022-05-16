@@ -25,7 +25,7 @@
                                 Variant="Variant.Outlined"/>
                 <MudCheckBox @bind-Checked=@montriĈiujn Label="montri ĉiujn, eĉ tiujn sen enhavoj"/>
                 <MudStack Spacing=1>
-                    <MudField Label="Serĉu" Variant=@Variant.Outlined>
+                    <MudField Label="Serĉi" Variant=@Variant.Outlined>
                             
                         <MudSelect Value="@serĉtipo" ValueChanged="@TraktiTipoŜanĝo" T=string>
                             <MudSelectItem Value=@("vorto")>vortojn</MudSelectItem>
@@ -34,12 +34,12 @@
                             <MudSelectItem Value=@("traduko")>tradukojn</MudSelectItem>
                         </MudSelect>
                     </MudField>
-                    <MudField Label="Trovu" Variant=@Variant.Outlined>
+                    <MudField Label="Trovi" Variant=@Variant.Outlined>
                         <MudCheckBox @bind-Checked=@ĈuMontriBazvortojn Label="bazvortojn"/>
                         <MudCheckBox @bind-Checked=@ĈuMontriFinaĵojn Label="finaĵojn"/>
                         <MudCheckBox @bind-Checked=@ĈuMontriKunmetaĵojn Label="kunmetaĵojn"/>
                     </MudField>
-                    <MudField Label="Montru la plej ŝatata(j)n" Variant=@Variant.Outlined>
+                    <MudField Label="Montri la plej ŝatata(j)n" Variant=@Variant.Outlined>
                         <MudStack>                        
                             <MudCheckBox @bind-Checked=@ĈuMontriDifinojn Label="difinon"/>
                             <MudCheckBox @bind-Checked=@ĈuMontriEkzemplojn Label="ekzemplon"/>
@@ -150,7 +150,7 @@
     <DialogContent>
         <MudCheckBox @bind-Checked=@montriĈiujn Label="montri ĉiujn, eĉ tiujn sen enhavoj"/>
         <MudStack Spacing=1>
-            <MudField Label="Serĉu" Variant=@Variant.Outlined>
+            <MudField Label="Serĉi" Variant=@Variant.Outlined>
                     
                 <MudSelect Value="@serĉtipo" ValueChanged="@TraktiTipoŜanĝo" T=string>
                     <MudSelectItem Value=@("vorto")>vortojn</MudSelectItem>
@@ -159,12 +159,12 @@
                     <MudSelectItem Value=@("traduko")>tradukojn</MudSelectItem>
                 </MudSelect>
             </MudField>
-            <MudField Label="Trovu" Variant=@Variant.Outlined>
+            <MudField Label="Trovi" Variant=@Variant.Outlined>
                 <MudCheckBox @bind-Checked=@ĈuMontriBazvortojn Label="bazvortojn"/>
                 <MudCheckBox @bind-Checked=@ĈuMontriFinaĵojn Label="finaĵojn"/>
                 <MudCheckBox @bind-Checked=@ĈuMontriKunmetaĵojn Label="kunmetaĵojn"/>
             </MudField>
-            <MudField Label="Montru la plej ŝatata(j)n" Variant=@Variant.Outlined>
+            <MudField Label="Montri la plej ŝatata(j)n" Variant=@Variant.Outlined>
                 <MudStack>                        
                     <MudCheckBox @bind-Checked=@ĈuMontriDifinojn Label="difinon"/>
                     <MudCheckBox @bind-Checked=@ĈuMontriEkzemplojn Label="ekzemplon"/>

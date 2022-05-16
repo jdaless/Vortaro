@@ -5,12 +5,12 @@
 <div class="pa-4">
     <h2>Aldoni novan vorton</h2>
 
-    <MudSelect @bind-Value="@Vortspeco" Label="Kreu" Variant=Variant.Outlined>
+    <MudSelect @bind-Value="@Vortspeco" Label="Krei" Variant=Variant.Outlined>
         <MudSelectItem Value="@("bazvorton")" />
         <MudSelectItem Value="@("kunmetaĵon")"/>
     </MudSelect>
 
-    <MudStack Row=true>
+    <MudStack Row=true class="pa-2">
 
         @if(Vortspeco == "bazvorton")
         {
@@ -44,9 +44,9 @@
     </MudStack>
     @if(Vortspeco == "kunmetaĵon")
     {
-        <h3>Aldoni Bazvortojn</h3>
+        <h3 class="pt-4">Aldonu Bazvortojn</h3>
         <div>
-            <MudTextField Label="Ŝerĉu Radikon" ValueChanged="@(s=>Serĉi(s))" Value=@serĉfrazo T=string Immediate />
+            <MudTextField Label="Serĉu Radikon" ValueChanged="@(s=>Serĉi(s))" Value=@serĉfrazo T=string Immediate />
 
             <MudExpansionPanels>
                 @foreach (var vorto in bazvortElektoj?.OrderBy(v=>v.Teksto == serĉfrazo ? string.Empty : v.Teksto).ToList() ?? new())

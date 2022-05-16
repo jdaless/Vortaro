@@ -1,3 +1,4 @@
+using System.Xml;
 using CsvHelper;
 
 public static class Krei
@@ -452,5 +453,41 @@ public static class Krei
         }
         Console.Write("> ");
         return l[int.Parse(Console.ReadLine()!)];
+    }
+
+    public static async Task ImportiRevon(string loko, VortaroContext context)
+    {
+        XmlReaderSettings settings = new()
+        {
+            Async = true
+        };
+
+        foreach(var f in System.IO.Directory.GetFiles(loko))
+        {
+            Vorto? vorto;
+
+            using var reader = XmlReader.Create(new System.IO.FileStream(f, FileMode.Open));
+
+            while(await reader.ReadAsync())
+            {
+                switch (reader.NodeType)
+                {
+                    case XmlNodeType.Element:
+                        if(reader.Name == "kap")
+                        {
+
+                        }
+                        break;
+                    case XmlNodeType.Text:
+                        break;
+                    case XmlNodeType.EndElement:
+                        break;
+                    default:
+                        throw new ArgumentException();
+                }
+            }
+        }
+
+        await context.SaveChangesAsync();
     }
 }
