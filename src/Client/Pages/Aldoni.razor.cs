@@ -9,7 +9,7 @@ public sealed partial class Aldoni
 {
     [Inject] APIServo APIServo {get; set; } = null!;
     [Inject] AuthenticationStateProvider AuthenticationStateProvider {get; set; }  = null!;
-    [Inject] NavigationManager NavigationManager {get;set;} = null;
+    [Inject] NavigationManager NavigationManager {get;set;} = null!;
 
     List<string> validajFinaĵoj = new()
     {
@@ -42,7 +42,7 @@ public sealed partial class Aldoni
     Guid? finaĵo;
     string? teksto;
 
-    string serĉfrazo;
+    string serĉfrazo = string.Empty;
     
     List<Vorto?>? finaĵoj;
     List<Vorto>? bazvortElektoj;

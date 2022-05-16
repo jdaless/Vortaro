@@ -34,9 +34,16 @@
                     
                 </Authorized>
             </AuthorizeView>
-            <MudButton Color="Color.Inherit" Variant="Variant.Text" Href="https://github.com/jdaless/Vortaro">pri</MudButton>
+            <MudButton Color=Color.Inherit Variant="Variant.Text" Href="https://github.com/jdaless/Vortaro">pri</MudButton>
             <AccessControl/>
-            
+            <MudToggleIconButton 
+                @bind-Toggled=malhela
+                Color=Color.Inherit 
+                Icon=@Icons.Filled.DarkMode 
+                Title="malheligu" 
+                ToggledColor=Color.Inherit
+                ToggledIcon=@Icons.Filled.LightMode 
+                ToggledTitle="heligu"/>
         </MudAppBar>
         <MudMainContent>
             <CascadingValue Value=Lingvo>
@@ -52,7 +59,7 @@
                 <MudFab StartIcon=@Icons.Filled.Translate Class="z-30 ma-4" Style=" object-position: right bottom; position: fixed; bottom: 0%" />
             </ActivatorContent>
             <ChildContent>
-                @foreach (var l in lingvoj.OrderBy(ling=>ling.Value.Nomo.Replace("La ",string.Empty)))
+                @foreach (var l in lingvoj!.OrderBy(ling=>ling.Value.Nomo.Replace("La ",string.Empty)))
                 {
                     <MudMenuItem OnClick=@(e => ŜanĝiLingvon(l.Key))>@l.Value.Nomo</MudMenuItem>
                 }
@@ -62,13 +69,8 @@
 </MudBreakpointProvider>
 
 <MudThemeProvider 
-    Theme="new()
-    {
-        Palette = new()
-        {
-            Primary = Colors.Green.Default,
-            Secondary = Colors.Orange.Default
-        },
-    }"/>
+    @ref="@_mudThemeProvider"
+    Theme=Theme
+    @bind-IsDarkMode=malhela/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>

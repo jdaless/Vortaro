@@ -15,6 +15,17 @@ public partial class MainLayout
     public string Lingvo {get; set; } = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
     private Dictionary<string, Lingvo>? lingvoj = null;
 
+    private bool malhela = false;
+    private MudThemeProvider _mudThemeProvider = null!;
+
+    public MainLayout() : base()
+    {
+        var dark = new MudTheme().PaletteDark;
+        dark.Primary = Colors.Green.Darken2;
+        dark.Secondary = Colors.Orange.Darken2;
+        Theme.PaletteDark = dark;
+    }
+
     protected override async Task OnInitializedAsync()
     {
         lingvoj = (await APIServo.APIPeto<List<Lingvo>>($"lingvo")).Where(l=> l.Id != "eo").ToDictionary(l=>l.Id, l=>l);   
@@ -28,6 +39,15 @@ public partial class MainLayout
     }
     //protected override void OnParametersSet() => StateHasChanged();
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            malhela = await _mudThemeProvider.GetSystemPreference();
+            StateHasChanged();
+        }
+    }
+
     void ŜanĝiLingvon(string lingvo)
     {
         if(Lingvo != lingvo) 
@@ -37,7 +57,14 @@ public partial class MainLayout
         }      
     }
 
-
-
     private string prepariLingvon(string s) => s[..(s.IndexOf("(")-1)];
+
+    public MudTheme Theme = new()
+    {
+        Palette = new()
+        {
+            Primary = Colors.Green.Default,
+            Secondary = Colors.Orange.Default
+        }
+    };
 }

@@ -60,12 +60,6 @@
                             </MudExpansionPanel>
                         }
                     </MudExpansionPanels>
-                    @* <ol>
-                        @foreach (var item in vorto.Radikoj.OrderBy(r=>r.Ordo))
-                        {
-                            <li>@RadikaString(item.RadikaVorto.Teksto!)<NavLink href=@($"/vorto/{item.RadikaVorto.Id}")>🡺</NavLink></li>
-                        }
-                    </ol> *@
                 }
             </MudTabPanel>
             <MudTabPanel Text="Difinoj">
