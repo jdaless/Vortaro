@@ -71,8 +71,7 @@ public sealed partial class Aldoni
     async Task AldonuVorton()
     {
         if(teksto == string.Empty 
-            || (teksto is null && !bazvortoj.Any())
-            || (vortspeco == "kunmetaĵon" && finaĵo is null))
+            || (teksto is null && !bazvortoj.Any()))
             return;
         var vorto = new Vorto()
         {
