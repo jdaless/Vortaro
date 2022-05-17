@@ -43,7 +43,7 @@ public sealed partial class VortoDetail
         fontoj = (await APIServo.APIPeto<List<Fonto>>($"fonto"))
                 .ToDictionary(f=>f.Id, f=>f);
         foreach(var f in fontoj.Values)
-            await APIServo.ŜarĝiguFonton(f);
+            await APIServo.ŜarguFonton(f);
 
         await BreakpointListener.Subscribe(b =>
         {
@@ -59,7 +59,7 @@ public sealed partial class VortoDetail
             v.Finaĵo = await APIServo.APIPeto<Vorto>($"vorto/{v.FinaĵoId}");
         
         var radj = new List<Radiko>();
-        await foreach(var r in APIServo.ŜarĝiguRadikojn(v!))
+        await foreach(var r in APIServo.ŜarguRadikojn(v!))
         {
             radj.Add(r);
         }
@@ -69,10 +69,10 @@ public sealed partial class VortoDetail
         await base.OnInitializedAsync(); 
     }
 
-    async Task ŜarĝiguDifinojn()
+    async Task ŜarguDifinojn()
     {
         vorto!.Difinoj.Clear();
-        await foreach(var d in APIServo.ŜarĝiguDifinojn(vorto!))
+        await foreach(var d in APIServo.ŜarguDifinojn(vorto!))
         {
             d.Fonto = fontoj![d.FontoId];
             vorto!.Difinoj.Add(d);
@@ -80,10 +80,10 @@ public sealed partial class VortoDetail
         }
     }
 
-    async Task ŜarĝiguTradukojn()
+    async Task ŜarguTradukojn()
     {
         vorto!.Tradukoj.Clear();
-        await foreach(var t in APIServo.ŜarĝiguTradukojn(vorto!))
+        await foreach(var t in APIServo.ŜarguTradukojn(vorto!))
         {            
             t.Fonto = fontoj![t.FontoId];
             vorto!.Tradukoj.Add(t);
@@ -91,10 +91,10 @@ public sealed partial class VortoDetail
         }
     }
 
-    async Task ŜarĝiguEkzemplojn()
+    async Task ŜarguEkzemplojn()
     {
         vorto!.Ekzemploj.Clear();
-        await foreach(var e in APIServo.ŜarĝiguEkzemplojn(vorto!))
+        await foreach(var e in APIServo.ŜarguEkzemplojn(vorto!))
         {
             e.Fonto = fontoj![e.FontoId];
             vorto!.Ekzemploj.Add(e);
@@ -139,16 +139,16 @@ public sealed partial class VortoDetail
         fontoj = (await APIServo.APIPeto<List<Fonto>>($"fonto"))
                 .ToDictionary(f=>f.Id, f=>f);
         foreach(var f in fontoj.Values)
-            await APIServo.ŜarĝiguFonton(f);
-        await ŜarĝiguNunanTabon(tabs.ActivePanelIndex);
+            await APIServo.ŜarguFonton(f);
+        await ŜarguNunanTabon(tabs.ActivePanelIndex);
     }    
 
-    Task ŜarĝiguNunanTabon(int i) =>
+    Task ŜarguNunanTabon(int i) =>
         i switch
         {
-            1 => ŜarĝiguDifinojn(),
-            2 => ŜarĝiguTradukojn(),
-            3 => ŜarĝiguEkzemplojn(),
+            1 => ŜarguDifinojn(),
+            2 => ŜarguTradukojn(),
+            3 => ŜarguEkzemplojn(),
             _ => Task.CompletedTask
         };
 
@@ -160,7 +160,7 @@ public sealed partial class VortoDetail
         fontoj = (await APIServo.APIPeto<List<Fonto>>($"fonto"))
                 .ToDictionary(f=>f.Id, f=>f);
         foreach(var f in fontoj.Values)
-            await APIServo.ŜarĝiguFonton(f);
+            await APIServo.ŜarguFonton(f);
         foreach(var d in vorto!.Difinoj) d.Fonto = fontoj[d.FontoId];
         foreach(var e in vorto!.Ekzemploj) e.Fonto = fontoj[e.FontoId];
         foreach(var t in vorto!.Tradukoj) t.Fonto = fontoj[t.FontoId];
@@ -174,7 +174,7 @@ public sealed partial class VortoDetail
         fontoj = (await APIServo.APIPeto<List<Fonto>>($"fonto"))
                 .ToDictionary(f=>f.Id, f=>f);
         foreach(var f in fontoj.Values)
-            await APIServo.ŜarĝiguFonton(f);
+            await APIServo.ŜarguFonton(f);
         foreach(var d in vorto!.Difinoj) d.Fonto = fontoj[d.FontoId];
         foreach(var e in vorto!.Ekzemploj) e.Fonto = fontoj[e.FontoId];
         foreach(var t in vorto!.Tradukoj) t.Fonto = fontoj[t.FontoId];

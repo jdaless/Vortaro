@@ -158,7 +158,7 @@ public sealed partial class Serĉi
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "uzf")]
-    public bool? UzuUzantajnFontojn
+    public bool? UzuUzantulajnFontojn
     {
         get => uzf; 
         set 
@@ -183,14 +183,14 @@ public sealed partial class Serĉi
     private Dictionary<Guid,Fonto>? fontoj = null;
 
 
-    private List<Vorto>? ŜarĝitajVortoj;
+    private List<Vorto>? ŜargitajVortoj;
 
     private bool init = false;
 
     private int tuto = 0;
 
-    private int ŝarĝitaj => ŜarĝitajVortoj?.Count ?? 0;
-    private TimeSpan ŝarĝtempo;
+    private int ŝargitaj => ŜargitajVortoj?.Count ?? 0;
+    private TimeSpan ŝargtempo;
 
     private bool montriĈiujn = false;
 
@@ -199,7 +199,7 @@ public sealed partial class Serĉi
     protected override async Task OnInitializedAsync()
     {  
         _httpClient = HttpClientFactory.CreateClient("Unauthenticated");
-        _ = ŜarĝiguVortojn();                     
+        _ = ŜarguVortojn();                     
         _ = Task.Run(async ()=>
             fontoj = (await APIServo.APIPeto<List<Fonto>>($"fonto"))
                 .ToDictionary(f=>f.Id, f=>f));
@@ -216,7 +216,7 @@ public sealed partial class Serĉi
         init = true;
     }
 
-    protected override Task OnParametersSetAsync() => ŜarĝiguVortojn();    
+    protected override Task OnParametersSetAsync() => ŜarguVortojn();    
 
     public void TraktiFrazoŜanĝo(string s)
     {
@@ -241,27 +241,27 @@ public sealed partial class Serĉi
         ĉuAgordojMalfermitaj = true;
     }
 
-    public async Task ŜarĝiguVortojn()
+    public async Task ŜarguVortojn()
     {
         var s = new Stopwatch();
         s.Start();
         var cacheSerĉfrazo = Serĉfrazo.ToString();
         
-        var nePleneŜarĝigitaj = new List<Vorto>();
+        var nePleneŜargitaj = new List<Vorto>();
         if(Serĉfrazo != string.Empty)
         {
              var v = 
             await APIServo.APIPeto<List<Vorto>>(
-                $"{Serĉtipo}/{(Serĉtipo == "traduko" ? Lingvo+"/" : string.Empty)}{Uri.EscapeDataString(Serĉfrazo)}?off={UzuOficialajnFontojn}&uzf={UzuUzantajnFontojn}");
+                $"{Serĉtipo}/{(Serĉtipo == "traduko" ? Lingvo+"/" : string.Empty)}{Uri.EscapeDataString(Serĉfrazo)}?off={UzuOficialajnFontojn}&uzf={UzuUzantulajnFontojn}");
 
-            nePleneŜarĝigitaj = v; 
+            nePleneŜargitaj = v; 
         }
-        tuto = nePleneŜarĝigitaj.Count;       
+        tuto = nePleneŜargitaj.Count;       
         await InvokeAsync(StateHasChanged);
-        if(nePleneŜarĝigitaj is null) return;
-        ŜarĝitajVortoj = new();
+        if(nePleneŜargitaj is null) return;
+        ŜargitajVortoj = new();
         
-        foreach(var v in nePleneŜarĝigitaj)
+        foreach(var v in nePleneŜargitaj)
         {
             if(cacheSerĉfrazo != Serĉfrazo) break; 
             if((!ĈuMontriBazvortojn!.Value && v.ĈuRadiko && !v.ĈuFinaĵo)
@@ -283,13 +283,13 @@ public sealed partial class Serĉi
                     Task.Run(async()=>
                     {
                         var radj = new List<Radiko>();
-                        await foreach(var r in APIServo.ŜarĝiguRadikojn(v))
+                        await foreach(var r in APIServo.ŜarguRadikojn(v))
                         {
                             radj.Add(r);
                         }
                         v.Radikoj = radj.ToList();
                     }));
-            var t = await APIServo.UnuajEnhavoj(v, Lingvo!, UzuOficialajnFontojn!.Value, UzuUzantajnFontojn!.Value);
+            var t = await APIServo.UnuajEnhavoj(v, Lingvo!, UzuOficialajnFontojn!.Value, UzuUzantulajnFontojn!.Value);
             if(t.t is not null && ĈuMontriTradukojn!.Value) v.Tradukoj.Add(t.t);
             if(t.d is not null && ĈuMontriDifinojn!.Value) v.Difinoj.Add(t.d);
             if(t.e is not null && ĈuMontriEkzemplojn!.Value) v.Ekzemploj.Add(t.e);
@@ -302,8 +302,8 @@ public sealed partial class Serĉi
                 continue;
             }
             if(cacheSerĉfrazo != Serĉfrazo) break; 
-            if(!ŜarĝitajVortoj.Any(vort => vort.Id == v.Id)) ŜarĝitajVortoj.Add(v);
-            ŝarĝtempo = s.Elapsed;
+            if(!ŜargitajVortoj.Any(vort => vort.Id == v.Id)) ŜargitajVortoj.Add(v);
+            ŝargtempo = s.Elapsed;
             await InvokeAsync(StateHasChanged);
         }
     }
@@ -320,7 +320,7 @@ public sealed partial class Serĉi
         if(!(ĈuMontriEkzemplojn ?? true)) elektoj["ekz"] = false; 
         if(!(ĈuMontriTradukojn ?? true)) elektoj["tra"] = false; 
         if(!(UzuOficialajnFontojn ?? true)) elektoj["off"] = false; 
-        if(!(UzuUzantajnFontojn ?? true)) elektoj["uzf"] = false; 
+        if(!(UzuUzantulajnFontojn ?? true)) elektoj["uzf"] = false; 
 
         return NavigationManager.GetUriWithQueryParameters(uri, elektoj);
     }

@@ -57,7 +57,6 @@ public sealed partial class Aldoni
 
     async Task Serĉi(string s)
     {        
-        var nePleneŜarĝigitaj = new List<Vorto>();
         serĉfrazo = s;
         if(s != string.Empty)
         {

@@ -1,7 +1,7 @@
 ﻿@page "/serĉi/{serĉtipo}/{serĉfrazo?}"
 
-<MudGrid>
-    <MudItem Class="z-30" md=4 sm=12 xs=12 Style="position: sticky; top: var(--mud-appbar-height); background: var(--mud-palette-background)">
+<MudGrid Style="width: 100%">
+    <MudItem Class="z-30" md=4 sm=12 xs=12 Style="height: 100%; position: sticky; top: var(--mud-appbar-height); background: var(--mud-palette-background)">
         <div class="pa-4" style="position: sticky; top: var(--mud-appbar-height); background: var(--mud-palette-background)">            
             <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert=true>
                 <MudTextField FullWidth=false 
@@ -39,37 +39,34 @@
                         <MudCheckBox @bind-Checked=@ĈuMontriFinaĵojn Label="finaĵojn"/>
                         <MudCheckBox @bind-Checked=@ĈuMontriKunmetaĵojn Label="kunmetaĵojn"/>
                     </MudField>
-                    <MudField Label="Montri la plej ŝatata(j)n" Variant=@Variant.Outlined>
-                        <MudStack>                        
-                            <MudCheckBox @bind-Checked=@ĈuMontriDifinojn Label="difinon"/>
-                            <MudCheckBox @bind-Checked=@ĈuMontriEkzemplojn Label="ekzemplon"/>
-                            <MudCheckBox @bind-Checked=@ĈuMontriTradukojn Label="tradukon"/>
-                        </MudStack>
+                    <MudField Label="Montri la plej ŝatata(j)n" Variant=@Variant.Outlined>                    
+                        <MudCheckBox @bind-Checked=@ĈuMontriDifinojn Label="difinon"/>
+                        <MudCheckBox @bind-Checked=@ĈuMontriEkzemplojn Label="ekzemplon"/>
+                        <MudCheckBox @bind-Checked=@ĈuMontriTradukojn Label="tradukon"/>
                     </MudField>
                     <MudField Label="el fontoj" Variant=@Variant.Outlined>                        
                         <MudCheckBox @bind-Checked=@UzuOficialajnFontojn Label="oficialaj"/>
-                        <MudCheckBox @bind-Checked=@UzuUzantajnFontojn Label="uzantaj"/>            
+                        <MudCheckBox @bind-Checked=@UzuUzantulajnFontojn Label="uzantulaj"/>            
                     </MudField>
                 </MudStack>
             </MudHidden>
-            <MudProgressLinear Color="Color.Primary" Value="@ŝarĝitaj" Max=@tuto Class="my-7" Size=@Size.Large>
+            <MudProgressLinear Color="Color.Primary" Value="@ŝargitaj" Max=@tuto Class="my-7" Size=@Size.Large>
                 <MudText Typo="Typo.caption" Style="color: var(--mud-palette-primary-text)">
-                    @if(ŝarĝitaj < tuto)
+                    @if(ŝargitaj < tuto)
                     {
-                        @:Ŝarĝinte @(ŝarĝitaj)
+                        @:Ŝarginte @(ŝargitaj)
                     }
                     else
                     {
-                        @:@ŝarĝitaj @(ŝarĝitaj > 1 ? "rezultoj" : "rezulto") dum @(Math.Round(ŝarĝtempo.TotalMilliseconds/1000f,1)) sekundoj
+                        @:@ŝargitaj @(ŝargitaj == 1 ? "rezulto" : "rezultoj") dum @(Math.Round(ŝargtempo.TotalMilliseconds/1000f,1)) @(Math.Round(ŝargtempo.TotalMilliseconds/1000f,1) == 1 ? "sekundo" : "sekundoj")
                     }
                 </MudText>
             </MudProgressLinear>
         </div>
     </MudItem>
     <MudItem md=8 sm=12 xs=12>    
-        @if(ŜarĝitajVortoj is not null)
-        {
-            foreach(var vorto in ŜarĝitajVortoj)
+        <Ŝargo Elemento=@ŜargitajVortoj>
+            @foreach(var vorto in ŜargitajVortoj!)
             {
                 <MudCard Class="ma-4">
                     <MudCardHeader>
@@ -133,11 +130,7 @@
                     </MudCardContent>
                 </MudCard>
             }
-        }
-        else
-        {
-            <p>Ŝarĝigas...</p>
-        }
+        </Ŝargo>
     </MudItem>
 </MudGrid>
 
@@ -150,8 +143,7 @@
     <DialogContent>
         <MudCheckBox @bind-Checked=@montriĈiujn Label="montri ĉiujn, eĉ tiujn sen enhavoj"/>
         <MudStack Spacing=1>
-            <MudField Label="Serĉi" Variant=@Variant.Outlined>
-                    
+            <MudField Label="Serĉi" Variant=@Variant.Outlined>                    
                 <MudSelect Value="@serĉtipo" ValueChanged="@TraktiTipoŜanĝo" T=string AnchorOrigin="Origin.BottomCenter">
                     <MudSelectItem Value=@("vorto")>vortojn</MudSelectItem>
                     <MudSelectItem Value=@("difino")>difinojn</MudSelectItem>
@@ -165,15 +157,13 @@
                 <MudCheckBox @bind-Checked=@ĈuMontriKunmetaĵojn Label="kunmetaĵojn"/>
             </MudField>
             <MudField Label="Montri la plej ŝatata(j)n" Variant=@Variant.Outlined>
-                <MudStack>                        
-                    <MudCheckBox @bind-Checked=@ĈuMontriDifinojn Label="difinon"/>
-                    <MudCheckBox @bind-Checked=@ĈuMontriEkzemplojn Label="ekzemplon"/>
-                    <MudCheckBox @bind-Checked=@ĈuMontriTradukojn Label="tradukon"/>
-                </MudStack>
+                <MudCheckBox @bind-Checked=@ĈuMontriDifinojn Label="difinon"/>
+                <MudCheckBox @bind-Checked=@ĈuMontriEkzemplojn Label="ekzemplon"/>
+                <MudCheckBox @bind-Checked=@ĈuMontriTradukojn Label="tradukon"/>
             </MudField>
             <MudField Label="el fontoj" Variant=@Variant.Outlined>                        
                 <MudCheckBox @bind-Checked=@UzuOficialajnFontojn Label="oficialaj"/>
-                <MudCheckBox @bind-Checked=@UzuUzantajnFontojn Label="uzantaj"/>            
+                <MudCheckBox @bind-Checked=@UzuUzantulajnFontojn Label="uzantulaj"/>            
             </MudField>
         </MudStack>
     </DialogContent> 

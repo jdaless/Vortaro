@@ -1,0 +1,18 @@
+@typeparam T
+
+@if(Elemento is null)
+{    
+    <MudOverlay Visible="true" DarkBackground="true" Absolute="true" Style="height: 100%">
+        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+    </MudOverlay>
+}
+else
+{
+    @ChildContent
+}
+
+@code{
+    [Parameter] public T? Elemento {get; set; }
+
+    [Parameter] public RenderFragment ChildContent { get; set; } = null!;
+}

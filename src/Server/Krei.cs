@@ -1,4 +1,4 @@
-using System.Xml;
+using System.Xml.Linq;
 using CsvHelper;
 
 public static class Krei
@@ -457,33 +457,50 @@ public static class Krei
 
     public static async Task ImportiRevon(string loko, VortaroContext context)
     {
-        XmlReaderSettings settings = new()
+        var revFonto = new Fonto()
         {
-            Async = true
+            Signo = "RV",
+            Ligilo = "https://retavortaro.de/revo/dlg/index-2d.html",
+            ĈuUzantkreita = false,
+            Titolo = "Reta Vortaro",
+            Favoreco = 0
         };
+
+        if(!context.Fontoj.Any(f=>f.Titolo == revFonto.Titolo))
+        {
+            context.Fontoj.AddRange(
+                revFonto
+
+            );
+            await context.SaveChangesAsync();
+        }
+
+
+        var finaĵoj = context.Vortoj.Where(v => v.ĈuFinaĵo).ToDictionary(v => v.Teksto!.TrimStart('-'), v=>v.Id);
 
         foreach(var f in System.IO.Directory.GetFiles(loko))
         {
             Vorto? vorto;
 
-            using var reader = XmlReader.Create(new System.IO.FileStream(f, FileMode.Open));
+            var artikoloj = XElement.Load(new System.IO.FileStream(f, FileMode.Open)).Elements("art");
 
-            while(await reader.ReadAsync())
+            foreach(var a in artikoloj)
             {
-                switch (reader.NodeType)
+                var kap = a.Element("kap")!;
+                var rad = kap.Element("rad")!.Value;
+                vorto = context.Vortoj.SingleOrDefault(v => v.Teksto == rad);
+                if(vorto == null)
                 {
-                    case XmlNodeType.Element:
-                        if(reader.Name == "kap")
-                        {
-
-                        }
-                        break;
-                    case XmlNodeType.Text:
-                        break;
-                    case XmlNodeType.EndElement:
-                        break;
-                    default:
-                        throw new ArgumentException();
+                    vorto = new Vorto
+                    {
+                        Teksto = rad,
+                        FinaĵoId = finaĵoj[kap.Value.Substring(kap.Value.IndexOf("/"),1)]
+                    };
+                    var ofc = kap.Element("ofc")!;
+                    if(ofc.Value == "*")
+                        vorto.FontoId = revFonto.Id;
+                    else
+                        vorto.FontoId = (await context.Fontoj.FindAsync(ofc.Value))!.Id;
                 }
             }
         }

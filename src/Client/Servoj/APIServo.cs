@@ -16,7 +16,7 @@ public class APIServo
         _authClient = httpClientFactory.CreateClient("ServerAPI");
     }
     
-    public async IAsyncEnumerable<Radiko> ŜarĝiguRadikojn(Vorto v)
+    public async IAsyncEnumerable<Radiko> ŜarguRadikojn(Vorto v)
     {
         var radikoj = await APIPeto<List<Guid>>($"vorto/{v.Id}/radikoj");
 
@@ -34,19 +34,19 @@ public class APIServo
         }
     }    
 
-    public async IAsyncEnumerable<Traduko> ŜarĝiguTradukojn(Vorto v)
+    public async IAsyncEnumerable<Traduko> ŜarguTradukojn(Vorto v)
     {
         foreach(var id in await APIPeto<List<Guid>>($"vorto/{v.Id}/tradukoj"))
             yield return await APIPeto<Traduko>($"traduko/{id}");
     }
     
-    public async IAsyncEnumerable<Difino> ŜarĝiguDifinojn(Vorto v)
+    public async IAsyncEnumerable<Difino> ŜarguDifinojn(Vorto v)
     {
         foreach(var id in await APIPeto<List<Guid>>($"vorto/{v.Id}/difinoj"))
             yield return await APIPeto<Difino>($"difino/{id}");
     }
 
-    public async IAsyncEnumerable<Ekzemplo> ŜarĝiguEkzemplojn(Vorto v)
+    public async IAsyncEnumerable<Ekzemplo> ŜarguEkzemplojn(Vorto v)
     {
         foreach(var id in await APIPeto<List<Guid>>($"vorto/{v.Id}/ekzemploj"))
             yield return await APIPeto<Ekzemplo>($"ekzemplo/{id}");
@@ -59,7 +59,7 @@ public class APIServo
         return (a[0].Deserialize<Difino>(options), a[1].Deserialize<Ekzemplo>(options), a[2].Deserialize<Traduko>(options));
     }
 
-    public async Task<Fonto> ŜarĝiguFonton(Fonto f)
+    public async Task<Fonto> ŜarguFonton(Fonto f)
     {
         if(f.KreintoId is not null)
             f.Kreinto =  await APIPeto<Uzanto>(

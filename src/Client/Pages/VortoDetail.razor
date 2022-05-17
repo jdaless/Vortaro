@@ -1,13 +1,8 @@
 @page "/vorto/{id:guid}"
 
-<div class="pt-4">
-    @if(vorto is null)
-    {
-        <p>Ŝarĝigas...</p>
-    }
-    else
-    {
-        if(NavigationManager.Uri.EndsWith($"/vorto/{Id}"))
+<div class="pt-4" style="height: 100%">
+    <Ŝargo Elemento=vorto>
+        @if(NavigationManager.Uri.EndsWith($"/vorto/{Id}"))
         {
             <PageTitle>@vorto.ToString()</PageTitle>
         }
@@ -25,7 +20,7 @@
                 @vorto.Finaĵo?.Teksto?.ToString().Trim('-').First()
             }
         </h1>
-        <MudTabs PanelClass="pa-6" @ref=tabs ActivePanelIndexChanged="i=>ŜarĝiguNunanTabon(i)">
+        <MudTabs PanelClass="pa-6" @ref=tabs ActivePanelIndexChanged="i=>ŜarguNunanTabon(i)">
             <MudTabPanel Text="Informaĵo">
                 <h4>Fonto</h4>
                 <p>
@@ -72,7 +67,7 @@
                 <EnhavoListoj Enhavoj=vorto.Ekzemploj Suprigu=Suprigu Malsuprigu=Malsuprigu Sendi=@(s=>SendiEnhavo<Ekzemplo>(s)) />
             </MudTabPanel>
         </MudTabs>        
-    }
+    </Ŝargo>
 </div>
 
 

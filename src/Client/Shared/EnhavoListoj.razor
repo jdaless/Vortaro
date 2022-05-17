@@ -16,7 +16,7 @@
     </MudItem>
     <MudItem xs=12 sm=12 md=6 >
         <MudHidden Breakpoint="Breakpoint.SmAndDown">
-            <MudText Typo=Typo.h6>Uzantaj</MudText>
+            <MudText Typo=Typo.h6>Uzantulaj</MudText>
         </MudHidden>
         @foreach (var item in Enhavoj.Where(d=>d.Fonto.ĈuUzantkreita))
         {
@@ -24,7 +24,7 @@
         }
         @if(!Enhavoj.Any(d=>d.Fonto.ĈuUzantkreita))
         {
-            <i style="color:grey">Tiu ĉi vorto ne havas @typeof(T).Name.ToLower()n uzantan. <AuthorizeView>Bonvolu aldoni!</AuthorizeView></i>
+            <i style="color:grey">Tiu ĉi vorto ne havas @typeof(T).Name.ToLower()n uzantulan. <AuthorizeView>Bonvolu aldoni!</AuthorizeView></i>
         }
         <AuthorizeView>
                 @if(ĉuAldoni)
