@@ -64,8 +64,8 @@ public sealed partial class VortoDetail
             radj.Add(r);
         }
         v.Radikoj = radj.ToList();
-        await InvokeAsync(StateHasChanged);
         vorto = v;
+        await InvokeAsync(StateHasChanged);
         await base.OnInitializedAsync(); 
     }
 
