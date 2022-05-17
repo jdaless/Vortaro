@@ -7,15 +7,22 @@
             {            
                 <MudStack Justify=@Justify.Center AlignItems=AlignItems.Center>
                     <AuthorizeView>
-                        <MudIconButton OnClick="@(() => Suprigu.InvokeAsync(Enhavo))" Icon=@Icons.Filled.ArrowUpward Size="Size.Small"/>
+                        <MudIconButton OnClick="@(() => Suprigi.InvokeAsync(Enhavo))" Icon=@Icons.Filled.ArrowUpward Size="Size.Small"/>
                     </AuthorizeView>
                     @Enhavo.Fonto.Favoreco 
                     <AuthorizeView>
-                        <MudIconButton OnClick="@(() => Malsuprigu.InvokeAsync(Enhavo))" Icon=@Icons.Filled.ArrowDownward Size="Size.Small"/>
+                        <MudIconButton OnClick="@(() => Malsuprigi.InvokeAsync(Enhavo))" Icon=@Icons.Filled.ArrowDownward Size="Size.Small"/>
                     </AuthorizeView>
                 </MudStack>
             }
             <blockquote cite="@Enhavo.Fonto.Ligilo">@((MarkupString)Markdig.Markdown.ToHtml(Enhavo.Teksto))</blockquote>
+            @if(Enhavo.Fonto.ĈuUzantkreita && Enhavo.Fonto.KreintoId == uzantoId)
+            {
+                <MudSpacer/>
+                <MudStack>
+                    <MudIconButton Icon=@Icons.Filled.Delete OnClick="@(()=>Forigi.InvokeAsync(Enhavo))"/>
+                </MudStack>
+            }
         </MudStack>  
     </MudCardContent>
     <MudCardActions>
@@ -37,7 +44,22 @@
 {
     [Parameter] public T Enhavo {get; set;} = null!;
 
-    [Parameter] public EventCallback<Enhavo> Suprigu {get; set;}
+    [Parameter] public EventCallback<Enhavo> Suprigi {get; set;}
 
-    [Parameter] public EventCallback<Enhavo> Malsuprigu {get; set;}
+    [Parameter] public EventCallback<Enhavo> Malsuprigi {get; set;}
+
+    [Parameter] public EventCallback<Enhavo> Forigi {get; set;}
+
+    
+
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider {get; set; }  = null!;
+
+    string uzantoId = null!;
+    protected override async Task OnInitializedAsync()
+    {
+        uzantoId = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.FindFirst("sub")!.Value;
+
+        await base.OnInitializedAsync();
+    }
 }
+

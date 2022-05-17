@@ -69,5 +69,18 @@ public class EkzemploController : ControllerBase
         _context.Add(e);
         await _context.SaveChangesAsync();
         return e;
+    }    
+    
+    [HttpDelete("{id:Guid}")]
+    [Authorize]
+    public async Task Delete(Guid id)
+    {
+        var uid = HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")!.Value;
+        var e = (await _context.Ekzemploj.FindAsync(id))!;
+        _context.Entry(e).Reference(e=>e.Fonto).Load();
+        if(e.Fonto.KreintoId != uid) throw new UnauthorizedAccessException();
+        _context.Remove(e);
+        _context.Remove(e.Fonto);
+        await _context.SaveChangesAsync();
     }
 }

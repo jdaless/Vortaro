@@ -84,6 +84,9 @@ public class APIServo
     public async Task<T> APIPostAuth<T>(string adreso, T aĵo) =>
         (await (await _authClient.PostAsJsonAsync($"api/{adreso}",aĵo)).Content.ReadFromJsonAsync<T>(options: options))!;
 
+    public async Task APIDeleteAuth<T>(string adreso, T aĵoId) =>
+        await _authClient.DeleteAsync($"api/{adreso}/{aĵoId!.ToString()}");
+
     public async Task<Voĉdono> Voĉdoni(Enhavo e, bool supre) =>
         (await (await _authClient.PostAsJsonAsync($"api/voĉdono/{e.Id}",supre)).Content.ReadFromJsonAsync<Voĉdono>(options: options))!;
 

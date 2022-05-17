@@ -181,5 +181,13 @@ public sealed partial class VortoDetail
         await InvokeAsync(StateHasChanged);
     }
 
+    [Authorize]
+    async Task Forigi(Enhavo enhavo)
+    {
+        await APIServo.APIDeleteAuth(enhavo.GetType().Name.ToLower(), enhavo.Id);
+        
+        await ŜarguNunanTabon(tabs.ActivePanelIndex);
+    }
+
 
 }

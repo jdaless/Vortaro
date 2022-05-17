@@ -58,13 +58,13 @@
                 }
             </MudTabPanel>
             <MudTabPanel Text="Difinoj">
-                <EnhavoListoj Enhavoj=vorto.Difinoj Suprigu=Suprigu Malsuprigu=Malsuprigu Sendi=@(s=>SendiEnhavo<Difino>(s)) />
+                <EnhavoListoj Enhavoj=vorto.Difinoj Suprigi=Suprigu Malsuprigi=Malsuprigu Forigi=Forigi Sendi=@(s=>SendiEnhavo<Difino>(s)) />
             </MudTabPanel>
             <MudTabPanel Text="Tradukoj">               
-                <EnhavoListoj Enhavoj=@(vorto.Tradukoj.Where(t=>t.LingvoId == Lingvo)) Suprigu=Suprigu Malsuprigu=Malsuprigu Sendi=@(s=>SendiEnhavo<Traduko>(s)) />
+                <EnhavoListoj Enhavoj="@(vorto.Tradukoj.Where(t=>t.LingvoId == Lingvo))" Suprigi=Suprigu Forigi=Forigi Malsuprigi=Malsuprigu Sendi=@(s=>SendiEnhavo<Traduko>(s)) />
             </MudTabPanel>
             <MudTabPanel Text="Ekzemploj">                 
-                <EnhavoListoj Enhavoj=vorto.Ekzemploj Suprigu=Suprigu Malsuprigu=Malsuprigu Sendi=@(s=>SendiEnhavo<Ekzemplo>(s)) />
+                <EnhavoListoj Enhavoj=vorto.Ekzemploj Suprigi=Suprigu Malsuprigi=Malsuprigu Forigi=Forigi Sendi=@(s=>SendiEnhavo<Ekzemplo>(s)) />
             </MudTabPanel>
         </MudTabs>        
     </Ŝargo>
