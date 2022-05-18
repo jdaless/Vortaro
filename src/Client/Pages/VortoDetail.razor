@@ -1,19 +1,19 @@
 @page "/vorto/{id:guid}"
 
-<div class="pt-4" style="height: 100%">
-    <Ŝargo Elemento=vorto>
-        @if(NavigationManager.Uri.EndsWith($"/vorto/{Id}"))
+<Ŝargo Elemento=vorto?.Fonto>
+    <div class="pt-4" style="height: 100%">
+        @if(NavigationManager.Uri.EndsWith($"/vorto/{Id}") && (vorto!.Teksto is not null || vorto.Radikoj.Any()))
         {
-            <PageTitle>@vorto.ToString()</PageTitle>
+            <PageTitle>@vorto?.ToString()</PageTitle>
         }
-        <h1 class="pl-4">
-            @if(vorto.Teksto is not null)
+        <h1 class="pl-4" style="height: 3em">
+            @if(vorto!.Teksto is not null)
             {
                 @vorto.Teksto<sup style="top: -.75em;font-size: .5em" title=@(vorto.Fonto.Titolo ?? "Uzanto") @onclick="@(_=>{if(vorto.Fonto.Ligilo is not null) NavigationManager.NavigateTo(vorto.Fonto.Ligilo);})">@vorto.Fonto.Signo</sup>@vorto.Finaĵo?.Teksto?.ToString().Trim('-').First()
             }
             else
             {
-                @foreach (var radiko in vorto.Radikoj)
+                @foreach (var radiko in vorto.Radikoj.Where(r => r.RadikaVorto is not null).OrderBy(r=>r.Ordo))
                 {
                     @radiko.RadikaVorto.Teksto!.Trim('-')<sup style="top: -.75em;font-size: .5em" title=@(radiko.RadikaVorto.Fonto.Titolo ?? "Uzanto") @onclick="@(_=>{if(radiko.RadikaVorto.Fonto.Ligilo is not null) NavigationManager.NavigateTo(radiko.RadikaVorto.Fonto.Ligilo);})">@radiko.RadikaVorto.Fonto.Signo</sup>
                 }
@@ -24,9 +24,11 @@
             <MudTabPanel Text="Informaĵo">
                 <h4>Fonto</h4>
                 <p>
-                    @if(vorto.Fonto.ĈuUzantkreita)
+                    @if(vorto.Fonto!.ĈuUzantkreita)
                     {
-                        <MudAvatar Image=@vorto.Fonto.Kreinto!.Bildo Size="Size.Medium"/> <i>@vorto.Fonto.Kreinto!.Nomo</i>
+                        <Ŝargo Elemento=vorto.Fonto.Kreinto>
+                            <MudAvatar Image=@vorto.Fonto.Kreinto!.Bildo Size="Size.Medium"/> <i>@vorto.Fonto.Kreinto!.Nomo</i>
+                        </Ŝargo>
                     }
                     else
                     {
@@ -34,7 +36,7 @@
                         <NavLink href=@(vorto.Fonto.Ligilo)>🡺</NavLink>
                     }
                 </p>
-                <h4>Radikoj</h4>
+                <h4>Radikoj</h4>                
                 @if(vorto.Teksto is not null)
                 {
                     <p>Ĉi tiu vorto estas bazvorto, ĝi ne enhavas radikojn krom si mem.</p>
@@ -42,7 +44,7 @@
                 else
                 {
                     <MudExpansionPanels>
-                        @foreach (var item in vorto.Radikoj.OrderBy(r=>r.Ordo))
+                        @foreach (var item in vorto.Radikoj.Where(r => r.RadikaVorto is not null).OrderBy(r=>r.Ordo))
                         {
                             <MudExpansionPanel Disabled=malebligiPanelojn>
                                 <TitleContent>
@@ -66,8 +68,8 @@
             <MudTabPanel Text="Ekzemploj">                 
                 <EnhavoListoj Enhavoj=vorto.Ekzemploj Suprigi=Suprigu Malsuprigi=Malsuprigu Forigi=Forigi Sendi=@(s=>SendiEnhavo<Ekzemplo>(s)) />
             </MudTabPanel>
-        </MudTabs>        
-    </Ŝargo>
-</div>
+        </MudTabs>  
+    </div>      
+</Ŝargo>
 
 

@@ -31,7 +31,7 @@ public class Vorto
     {
         return Teksto is not null
             ? Teksto + Finaĵo?.ToString().Trim('-').First()  //bazvortoj kun/sen finaĵo
-            : (string.Join(string.Empty,Radikoj.OrderBy(r => r.Ordo).Select(r => r.RadikaVorto.Teksto!.Trim('-'))) + Finaĵo?.ToString().Trim('-').First()); //ĉiuj el la radikoj
+            : (string.Join(string.Empty,Radikoj.OrderBy(r => r.Ordo).Select(r => r.RadikaVorto?.Teksto?.Trim('-'))) + Finaĵo?.ToString().Trim('-').First()); //ĉiuj el la radikoj
 
     }
 }

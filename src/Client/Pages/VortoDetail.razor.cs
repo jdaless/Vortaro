@@ -34,16 +34,36 @@ public sealed partial class VortoDetail
 
     protected override async Task OnInitializedAsync()
     {  
+        vorto = await APIServo.APIPeto<Vorto>($"vorto/{Id}");
+        var l = new List<Radiko>();
+        await foreach(var r in APIServo.ŜarguRadikojn(vorto!))
+        {
+            l.Add(r);
+        }
+        vorto.Radikoj = l;
 
         _ = Task.Run(async ()=>
-            {
-                lingvoj = await APIServo.APIPeto<List<Lingvo>>($"lingvo");
-                await InvokeAsync(StateHasChanged);
-            });                            
-        fontoj = (await APIServo.APIPeto<List<Fonto>>($"fonto"))
-                .ToDictionary(f=>f.Id, f=>f);
-        foreach(var f in fontoj.Values)
-            await APIServo.ŜarguFonton(f);
+        {
+            lingvoj = await APIServo.APIPeto<List<Lingvo>>($"lingvo");
+            await InvokeAsync(StateHasChanged);
+        });   
+            
+        _ = Task.Run(async ()=>
+        {    
+            if(vorto!.FinaĵoId is not null)
+                vorto.Finaĵo = await APIServo.APIPeto<Vorto>($"vorto/{vorto.FinaĵoId}");
+            await InvokeAsync(StateHasChanged);
+        });
+
+        _ = Task.Run(async ()=>
+        {                         
+            fontoj = (await APIServo.APIPeto<List<Fonto>>($"fonto"))
+                    .ToDictionary(f=>f.Id, f=>f);
+            foreach(var f in fontoj.Values)
+                await APIServo.ŜarguFonton(f);
+            vorto.Fonto = fontoj[vorto.FontoId];
+            await InvokeAsync(StateHasChanged);
+        });
 
         await BreakpointListener.Subscribe(b =>
         {
@@ -51,27 +71,18 @@ public sealed partial class VortoDetail
             malebligiPanelojn = b.CompareTo(MudBlazor.Breakpoint.Md) < 0;
             StateHasChanged();
         });
+
         malebligiPanelojn = await BreakpointListener.IsMediaSize(MudBlazor.Breakpoint.SmAndDown);
 
-        var v = await APIServo.APIPeto<Vorto>($"vorto/{Id}");
-        v.Fonto = fontoj[v.FontoId];
-        if(v!.FinaĵoId is not null)
-            v.Finaĵo = await APIServo.APIPeto<Vorto>($"vorto/{v.FinaĵoId}");
         
-        var radj = new List<Radiko>();
-        await foreach(var r in APIServo.ŜarguRadikojn(v!))
-        {
-            radj.Add(r);
-        }
-        v.Radikoj = radj.ToList();
-        vorto = v;
+
         await InvokeAsync(StateHasChanged);
         await base.OnInitializedAsync(); 
     }
 
     async Task ŜarguDifinojn()
     {
-        vorto!.Difinoj.Clear();
+        if(vorto!.Difinoj.Any()) vorto!.Difinoj.Clear();
         await foreach(var d in APIServo.ŜarguDifinojn(vorto!))
         {
             d.Fonto = fontoj![d.FontoId];
@@ -82,7 +93,7 @@ public sealed partial class VortoDetail
 
     async Task ŜarguTradukojn()
     {
-        vorto!.Tradukoj.Clear();
+        if(vorto!.Tradukoj.Any()) vorto!.Tradukoj.Clear();
         await foreach(var t in APIServo.ŜarguTradukojn(vorto!))
         {            
             t.Fonto = fontoj![t.FontoId];
@@ -93,7 +104,7 @@ public sealed partial class VortoDetail
 
     async Task ŜarguEkzemplojn()
     {
-        vorto!.Ekzemploj.Clear();
+        if(vorto!.Ekzemploj.Any()) vorto!.Ekzemploj.Clear();
         await foreach(var e in APIServo.ŜarguEkzemplojn(vorto!))
         {
             e.Fonto = fontoj![e.FontoId];
