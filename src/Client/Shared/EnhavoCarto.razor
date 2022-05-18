@@ -28,10 +28,13 @@
     <MudCardActions>
         <MudSpacer/>
         @if(Enhavo.Fonto.ĈuUzantkreita)
-        {            
-            <NavLink href=@($"/uzanto/{Enhavo.Fonto.Kreinto!.Id}")>
-                <MudAvatar Image=@Enhavo.Fonto.Kreinto.Bildo Size="Size.Medium"/> <i>@Enhavo.Fonto.Kreinto.Nomo</i>
-            </NavLink>
+        {     
+            @if(Enhavo.Fonto.Kreinto is not null)
+            {
+                <NavLink href=@($"/uzanto/{Enhavo.Fonto.Kreinto!.Id}")>
+                    <MudAvatar Image=@Enhavo.Fonto.Kreinto.Bildo Size="Size.Medium"/> <i>@Enhavo.Fonto.Kreinto.Nomo</i>
+                </NavLink>
+            }       
         }
         else
         {
