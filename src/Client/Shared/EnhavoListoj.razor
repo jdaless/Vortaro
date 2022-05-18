@@ -39,7 +39,7 @@
                         </MudCardContent>
                         <MudCardActions>
                             <MudSpacer/>
-                            <MudIconButton Icon=@Icons.Filled.Send OnClick="@(_=>Sendi.InvokeAsync(nova))"/>
+                            <MudIconButton Icon=@Icons.Filled.Send OnClick="@(_=>{Sendi.InvokeAsync(nova); ĉuAldoni = false;})"/>
                         </MudCardActions>
                     </MudCard>  
                 }

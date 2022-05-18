@@ -135,17 +135,39 @@ public sealed partial class VortoDetail
             ĈuUzantkreita = true,
             KreintoId = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.FindFirst("sub")!.Value
         };
-        //sendi fonton kaj ricevi novan ID 
+
         fonto = await APIServo.APIPostAuth("fonto", fonto);
+
+        var montrEnhavo = new T()
+        {
+            Teksto = enaĵo,
+            Fonto = fonto,
+            Vorto = vorto
+        };
+        
+        switch(montrEnhavo)
+        {
+            case Traduko t:
+                t.LingvoId = Lingvo;
+                vorto.Tradukoj.Add(t);
+                break;
+            case Difino d:
+                vorto.Difinoj.Add(d);
+                break;
+            case Ekzemplo e:
+                vorto.Ekzemploj.Add(e);
+                break;
+        }
+        await InvokeAsync(StateHasChanged);
+
+        //sendi fonton kaj ricevi novan ID 
         var enhavo = new T()
         {
             Teksto = enaĵo,
             FontoId = fonto.Id,
             VortoId = vorto!.Id
         };
-        if(enhavo is Traduko t) t.LingvoId = Lingvo;
         //sendi enhavon
-        Console.WriteLine(JsonSerializer.Serialize(enhavo));
         await APIServo.APIPostAuth(typeof(T).Name.ToLower(), enhavo);
         fontoj = (await APIServo.APIPeto<List<Fonto>>($"fonto"))
                 .ToDictionary(f=>f.Id, f=>f);
@@ -194,7 +216,7 @@ public sealed partial class VortoDetail
 
     [Authorize]
     async Task Forigi(Enhavo enhavo)
-    {
+    {        
         await APIServo.APIDeleteAuth(enhavo.GetType().Name.ToLower(), enhavo.Id);
         
         await ŜarguNunanTabon(tabs.ActivePanelIndex);
