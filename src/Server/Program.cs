@@ -22,7 +22,7 @@ builder.Services.AddControllers(options => options.SuppressImplicitRequiredAttri
 
 builder.Services.AddDbContext<VortaroContext>(options => options.UseMySql(
             Configuration.GetConnectionString("UVD"), 
-            new MySqlServerVersion(new Version(5, 7, 36))));
+            new MySqlServerVersion(new Version(8, 0, 0))));
 
 async Task Validate(TokenValidatedContext context)
 {

@@ -70,7 +70,7 @@ public class VortoController : ControllerBase
                         GROUP BY L2.DerivaĵaVortoId 
                     ) AS L 
                     ON A.Id = L.DerivaĵaVortoId
-                    WHERE REPLACE(CONCAT(IFNULL(A.Teksto,L.Teksto),IFNULL(F.Teksto,"""")),""-"","""") REGEXP {s}";
+                    WHERE regexp_like(REPLACE(CONCAT(IFNULL(A.Teksto,L.Teksto),IFNULL(F.Teksto,"""")),""-"",""""),{s})";
             var q = _context.Vortoj
                 .FromSqlInterpolated(petastring);                      
             return q.Include(v => v.Fonto).ToArray();
